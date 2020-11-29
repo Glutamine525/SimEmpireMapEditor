@@ -6,6 +6,7 @@ var startX = -1;
 var startY = -1;
 var nowX = -1;
 var nowY = -1;
+var copiedBuilding = undefined;
 
 function drawChessboard() {
     let chessboard = document.createElement("div");
@@ -462,6 +463,46 @@ document.body.onmousemove = (e) => {
     nowY = e.clientY;
     html.scrollLeft = startScrollLeft + (startX - nowX);
     html.scrollTop = startScrollTop + (startY - nowY);
+};
+
+document.onkeydown = (e) => {
+    var keyCode = e.keyCode || e.which || e.charCode;
+    var ctrlKey = e.ctrlKey || e.metaKey;
+    if (ctrlKey && keyCode == 67) {
+        let unit = cursor.select.split("-");
+        if (unit.length === 2) return;
+        let building = getElementByCoord(unit[0], unit[1], unit[2]);
+        if (building.getAttribute("modify") != "true") return;
+        copiedBuilding = {};
+        copiedBuilding.size = Number(unit[2]);
+        copiedBuilding.text = building.firstElementChild
+            ? building.innerHTML.substring(0, building.innerHTML.indexOf("<"))
+            : building.innerHTML;
+        copiedBuilding.modify = "true";
+        copiedBuilding.color = building.style.color;
+        copiedBuilding.background_color = building.style.backgroundColor;
+        copiedBuilding.border_color = building.style.borderColor;
+        if (building.hasAttribute("rang_size")) {
+            copiedBuilding.range_size = Number(building.getAttribute("range_size"));
+        } else {
+            copiedBuilding.range_size = 0;
+        }
+    }
+    if (ctrlKey && keyCode == 86 && copiedBuilding) {
+        let unit = cursor.select.split("-");
+        if (unit.length === 3) return;
+        insertBuilding(
+            Number(unit[0]),
+            Number(unit[1]),
+            copiedBuilding.size,
+            copiedBuilding.modify,
+            copiedBuilding.text,
+            copiedBuilding.color,
+            copiedBuilding.background_color,
+            copiedBuilding.border_color,
+            copiedBuilding.range_size
+        );
+    }
 };
 
 function init(type) {
