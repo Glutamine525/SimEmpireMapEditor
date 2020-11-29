@@ -1,0 +1,56 @@
+#map-chessboard {
+    user-select: none;
+    transform: scale(var(--scale), var(--scale));
+}
+
+.rotate {
+    transform: rotate(45deg) scale(var(--scale), var(--scale)) !important;
+}
+
+.border-full {
+    border: 1px solid black;
+    width: 30px;
+    height: 30px;
+    display: inline-block;
+    text-align: center;
+    line-height: 30px;
+    overflow: hidden;
+    box-sizing: border-box;
+}
+
+.border-all-missing {
+    border: 0;
+    width: 30px;
+    height: 30px;
+    display: inline-block;
+    text-align: center;
+    line-height: 30px;
+    overflow: hidden;
+    box-sizing: border-box;
+}
+
+.cell-selected {
+    border: 2px solid yellow !important;
+}
+
+.tooltip {
+    position: relative;
+    display: inline-block;
+}
+
+.tooltip .tooltiptext {
+    visibility: hidden;
+    width: 200px;
+    background-color: black;
+    color: #fff;
+    text-align: center;
+    padding: 5px 0;
+    border-radius: 6px;
+    position: absolute;
+    z-index: 1000;
+    font-size: 12px;
+}
+
+.tooltip:hover .tooltiptext {
+    visibility: visible;
+}

@@ -1,0 +1,100 @@
+.building-1 {
+    border: 1px solid black;
+    width: 30px;
+    height: 30px;
+    display: inline-block;
+    text-align: center;
+    line-height: 30px;
+    overflow: hidden;
+    position: absolute;
+    z-index: 10;
+    box-sizing: border-box;
+}
+
+.building-2 {
+    border: 1px solid black;
+    width: 60px;
+    height: 60px;
+    display: inline-block;
+    text-align: center;
+    line-height: 60px;
+    overflow: hidden;
+    position: absolute;
+    z-index: 10;
+    box-sizing: border-box;
+}
+
+.building-3 {
+    border: 1px solid black;
+    width: 90px;
+    height: 90px;
+    display: inline-block;
+    text-align: center;
+    line-height: 90px;
+    overflow: hidden;
+    position: absolute;
+    z-index: 10;
+    box-sizing: border-box;
+}
+
+.building-4 {
+    border: 1px solid black;
+    width: 120px;
+    height: 120px;
+    display: inline-block;
+    text-align: center;
+    line-height: 120px;
+    overflow: hidden;
+    position: absolute;
+    z-index: 10;
+    box-sizing: border-box;
+}
+
+.building-5 {
+    border: 1px solid black;
+    width: 150px;
+    height: 150px;
+    display: inline-block;
+    text-align: center;
+    line-height: 150px;
+    overflow: hidden;
+    position: absolute;
+    z-index: 10;
+    box-sizing: border-box;
+}
+
+.building {
+    border: 1px solid black;
+    width: calc(var(--count) * 30px);
+    height: calc(var(--count) * 30px);
+    display: inline-block;
+    text-align: center;
+    line-height: calc(var(--count) * 30px);
+    overflow: hidden;
+    position: absolute;
+    z-index: 10;
+    box-sizing: border-box;
+}
+
+.building-range {
+    background-color: #ffaaaa !important;
+    opacity: 0.5;
+}
+
+.building span {
+    position: absolute;
+    top: 0;
+    left: 0;
+    font-size: 12px;
+    line-height: 12px;
+    transform: scale(0.75);
+    font-weight: bold;
+}
+
+.road {
+    background-image: repeating-linear-gradient(45deg, orange 0, orange 1px, rgba(0, 0, 0, 0) 1px, rgba(0, 0, 0, 0) 7px),
+        repeating-linear-gradient(-45deg, orange 0, orange 1px, rgba(0, 0, 0, 0) 1px, rgba(0, 0, 0, 0) 7px);
+    background-color: #fdfebd;
+    height: 30px;
+    width: 30px;
+}

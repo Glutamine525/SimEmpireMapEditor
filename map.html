@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8" />
+        <title>模拟帝国地图编辑器</title>
+        <link rel="stylesheet" type="text/css" href="css/main.css" />
+        <link rel="stylesheet" type="text/css" href="css/building.css" />
+        <link rel="stylesheet" type="text/css" href="css/top-nav.css" />
+        <link rel="stylesheet" type="text/css" href="css/bottom-nav.css" />
+        <link rel="stylesheet" type="text/css" href="css/loading.css" />
+        <script src="js/building_china.js"></script>
+        <script src="js/building_persian.js"></script>
+        <script src="js/building_egypt.js"></script>
+        <script src="js/building_greece.js"></script>
+        <script src="js/building_aztaka.js"></script>
+        <script src="js/const.js"></script>
+        <script src="js/util.js"></script>
+        <script src="js/event.js"></script>
+        <script src="js/jquery1.8.3.js"></script>
+        <script src="js/html2canvas.js"></script>
+    </head>
+
+    <body style="height: 100%; width: 100%">
+        <div class="loading" id="loading" style="display: none">
+            <div class="spinner-wrapper">
+                <span class="spinner-text">CAPTURING</span>
+                <span class="spinner"></span>
+            </div>
+        </div>
+        <div id="top-nav">
+            <span id="type-label">地图类型: </span>
+            <span style="margin-right: 20px; top: -1px; position: relative">
+                <select id="type" onchange="onChangeType(this.value)">
+                    <option value="5">5</option>
+                    <option value="4">4</option>
+                    <option value="3">3</option>
+                </select>
+            </span>
+            <span id="nationality-label">国家: </span>
+            <span style="margin-right: 20px; top: -1px; position: relative">
+                <select id="nationality" onchange="onChangeNationality()">
+                    <option value="China">中国</option>
+                    <option value="Persian">波斯</option>
+                    <option value="Egypt">埃及</option>
+                    <option value="Greece">希腊</option>
+                    <option value="Aztaka">阿兹特克</option>
+                </select>
+            </span>
+            <span id="no-wood-label">无木之地: </span>
+            <label class="switch" style="margin-right: 20px">
+                <input
+                    id="no-wood"
+                    type="checkbox"
+                    class="switch-input"
+                    onclick="onClickNoWood(Number(document.getElementById('type').value))"
+                />
+                <span class="switch-label" data-on="On" data-off="Off"></span>
+                <span class="switch-handle"></span>
+            </label>
+            <span id="rotate-label">旋转地图: </span>
+            <label class="switch" style="margin-right: 20px">
+                <input id="rotate" type="checkbox" class="switch-input" onclick="onClickRotate()" />
+                <span class="switch-label" data-on="On" data-off="Off"></span>
+                <span class="switch-handle"></span>
+            </label>
+            <span id="scale-label">地图缩放: </span>
+            <input type="range" id="scale" min="0.5" max="1.5" step="0.1" onchange="onChangeScale()" />
+            <output id="scale-value" for="scale" style="margin-right: 20px">1</output>
+            <span id="coord-label">当前选中坐标(横-纵): </span>
+            <span id="coord" style="margin-right: 20px">无</span>
+            <span id="hold-label">当前选中放置建筑: </span>
+            <span id="hold" style="margin-right: 20px">无</span>
+            <span id="author" style="color: red; margin-right: 20px; float: right">作者: 咕噜他命,</span>
+            <span id="version" style="color: red; margin-right: 20px; float: right"></span>
+            <div id="tip" class="tooltip" style="margin-right: 20px; float: right">
+                <img src="./tip.png" style="width: 20px; top: 4px; position: relative" />
+                <span class="tooltiptext">
+                    双击建筑可以删除
+                    <br />
+                    选中建筑后可以拖动放置
+                    <br />
+                    感谢 霸乄刀-精神小伙,
+                    <br />
+                    提供的阿兹特克建筑数据
+                    <br />
+                    作者联系邮箱glutamine525@gmail.com
+                </span>
+            </div>
+        </div>
+        <div style="height: 100px"></div>
+        <div id="map-chessboard"></div>
+        <div style="height: 100px"></div>
+        <div id="bottom-nav"></div>
+        <a href="" id="download" download="" style="display: none"></a>
+        <img id="image-transition" style="display: block" />
+    </body>
+
+    <script src="js/init.js"></script>
+
+    <script>
+        document.getElementById("version").innerHTML = "版本号: V1.13";
+        init(Number(document.getElementById("type").value));
+    </script>
+</html>
