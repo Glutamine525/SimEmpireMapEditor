@@ -473,6 +473,7 @@ document.onkeydown = (e) => {
         if (unit.length === 2) return;
         let building = getElementByCoord(unit[0], unit[1], unit[2]);
         if (building.getAttribute("modify") != "true") return;
+        if (building.hasAttribute("road")) return;
         copiedBuilding = {};
         copiedBuilding.size = Number(unit[2]);
         copiedBuilding.text = building.firstElementChild
