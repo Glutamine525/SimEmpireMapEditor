@@ -11,7 +11,7 @@ const building_aztaka = {
         },
         {
             name: "高级住宅",
-            text: "高级住宅",
+            text: "高宅",
             size: 2,
             range_size: 0,
             color: "#000000",
