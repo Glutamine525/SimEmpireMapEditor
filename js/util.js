@@ -542,12 +542,12 @@ function clearAroundBuildingProtectionNumber(li, co, size, range_size) {
 
 function refreshRoadsBorder(li, co) {
     if (isDirRoad(li - 1, co)) {
-        getElementByCoord(li - 1, co, 1).style.borderBottom = "1px dotted";
-        getElementByCoord(li, co, 1).style.borderTop = "1px dotted";
+        getElementByCoord(li - 1, co, 1).style.borderBottom = "1px solid #009be8";
+        getElementByCoord(li, co, 1).style.borderTop = "1px solid #009be8";
     }
     if (isDirRoad(li + 1, co)) {
-        getElementByCoord(li, co, 1).style.borderBottom = "1px dotted";
-        getElementByCoord(li + 1, co, 1).style.borderTop = "1px dotted";
+        getElementByCoord(li, co, 1).style.borderBottom = "1px solid #009be8";
+        getElementByCoord(li + 1, co, 1).style.borderTop = "1px solid #009be8";
     }
 }
 
@@ -647,6 +647,19 @@ function concat(arr1, arr2) {
     return arr;
 }
 
+function restoreAfterScreenshot(scale, isRotated) {
+    document.getElementById(cursor.select).classList.add("cell-selected");
+    document.getElementById("scale").value = scale;
+    document.getElementById("rotate").checked = isRotated;
+    onChangeScale();
+    onClickRotate();
+    document.getElementById("top-nav").classList.remove("frosted-glass");
+    document.getElementById("map-chessboard").classList.remove("frosted-glass");
+    document.getElementById("bottom-nav").classList.remove("frosted-glass");
+    document.getElementById("image-transition").style.display = "none";
+    document.getElementById("loading").style.display = "none";
+}
+
 function screenshot() {
     let loading = document.getElementById("loading");
     let record_scale = document.getElementById("scale").value;
@@ -671,13 +684,14 @@ function screenshot() {
     document.getElementById("bottom-nav").classList.add("frosted-glass");
     loading.style.display = "block";
     html2canvas(document.querySelector("#map-chessboard"), {
-        useCORS: true,
+        useCORS: false,
         width: 116 * 30,
+        scale: 2,
     }).then(function (canvas1) {
         let timers = new Date();
         let fullYear = timers.getFullYear();
         let month = timers.getMonth() + 1;
-        let date = timers.getDate();
+        let date = timers.getDate() < 10 ? "0" + timers.getDate() : timers.getDate();
         let randoms = Math.random() + "";
         let numberFileName = fullYear + "" + month + date + randoms.slice(3, 10);
         let filename = numberFileName + ".jpeg";
@@ -694,16 +708,7 @@ function screenshot() {
                         document.getElementById("download").setAttribute("href", url);
                         document.getElementById("download").setAttribute("download", filename);
                         document.getElementById("download").click();
-                        document.getElementById(cursor.select).classList.add("cell-selected");
-                        document.getElementById("scale").value = record_scale;
-                        document.getElementById("rotate").checked = record_isRotated;
-                        onChangeScale();
-                        onClickRotate();
-                        document.getElementById("top-nav").classList.remove("frosted-glass");
-                        document.getElementById("map-chessboard").classList.remove("frosted-glass");
-                        document.getElementById("bottom-nav").classList.remove("frosted-glass");
-                        img.style.display = "none";
-                        loading.style.display = "none";
+                        restoreAfterScreenshot(record_scale, record_isRotated);
                     });
                 });
             } else {
@@ -711,16 +716,7 @@ function screenshot() {
                 document.getElementById("download").setAttribute("href", url);
                 document.getElementById("download").setAttribute("download", filename);
                 document.getElementById("download").click();
-                document.getElementById(cursor.select).classList.add("cell-selected");
-                document.getElementById("scale").value = record_scale;
-                document.getElementById("rotate").checked = record_isRotated;
-                onChangeScale();
-                onClickRotate();
-                document.getElementById("top-nav").classList.remove("frosted-glass");
-                document.getElementById("map-chessboard").classList.remove("frosted-glass");
-                document.getElementById("bottom-nav").classList.remove("frosted-glass");
-                img.style.display = "none";
-                loading.style.display = "none";
+                restoreAfterScreenshot(record_scale, record_isRotated);
             }
         });
     });
