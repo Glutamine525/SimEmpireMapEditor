@@ -20,16 +20,13 @@ function isDirRoad(li, co, direction) {
         return (
             getElementByCoord(li, co, 1) &&
             getElementByCoord(li, co, 1).hasAttribute("road") &&
-            getRoadDir(li, co, false) == direction
+            getRoadDir(li, co) == direction
         );
     }
     return getElementByCoord(li, co, 1) && getElementByCoord(li, co, 1).hasAttribute("road");
 }
 
-function getRoadDir(li, co, checkSelf) {
-    // if (checkSelf && (!getElementByCoord(li, co, 1) || !getElementByCoord(li, co, 1).hasAttribute("road"))) {
-    //     return "null";
-    // }
+function getRoadDir(li, co) {
     if (isDirRoad(li, co - 1) || isDirRoad(li, co + 1)) {
         return "horizontal";
     }
@@ -543,6 +540,17 @@ function clearAroundBuildingProtectionNumber(li, co, size, range_size) {
     }
 }
 
+function refreshRoadsBorder(li, co) {
+    if (isDirRoad(li - 1, co)) {
+        getElementByCoord(li - 1, co, 1).style.borderBottom = "1px dotted";
+        getElementByCoord(li, co, 1).style.borderTop = "1px dotted";
+    }
+    if (isDirRoad(li + 1, co)) {
+        getElementByCoord(li, co, 1).style.borderBottom = "1px dotted";
+        getElementByCoord(li + 1, co, 1).style.borderTop = "1px dotted";
+    }
+}
+
 function updateRoadsCount(li, co) {
     let neighbors = [];
     let ancillary = [-1, 0, 1];
@@ -562,6 +570,10 @@ function updateRoadsCount(li, co) {
                     setRoadCount(v.li, v.co - 1, 1);
                     setRoadCount(v.li, v.co, 2);
                 } else setRoadCount(v.li, v.co, count + 1);
+                getElementByCoord(v.li, v.co - 1, 1).style.borderRight = "none";
+                getElementByCoord(v.li, v.co, 1).style.borderLeft = "none";
+                refreshRoadsBorder(v.li, v.co - 1);
+                refreshRoadsBorder(v.li, v.co);
                 hasLeft = true;
             }
             if (isDirRoad(v.li, v.co + 1)) {
@@ -571,11 +583,17 @@ function updateRoadsCount(li, co) {
                     setRoadCount(v.li, v.co + 1, 2);
                     count = 1;
                 } else setRoadCount(v.li, v.co + 1, count + 1);
+                getElementByCoord(v.li, v.co, 1).style.borderRight = "none";
+                getElementByCoord(v.li, v.co + 1, 1).style.borderLeft = "none";
+                refreshRoadsBorder(v.li, v.co);
+                refreshRoadsBorder(v.li, v.co + 1);
                 if (v.li != li) continue;
                 count += 2;
                 let co_idx = v.co + 2;
                 while (isDirRoad(v.li, co_idx, "horizontal")) {
                     setRoadCount(v.li, co_idx, count);
+                    getElementByCoord(v.li, co_idx, 1).style.borderLeft = "none";
+                    refreshRoadsBorder(v.li, co_idx - 1);
                     count++;
                     co_idx++;
                 }
@@ -591,6 +609,8 @@ function updateRoadsCount(li, co) {
                     setRoadCount(v.li - 1, v.co, 1);
                     setRoadCount(v.li, v.co, 2);
                 } else setRoadCount(v.li, v.co, count + 1);
+                getElementByCoord(v.li - 1, v.co, 1).style.borderBottom = "none";
+                getElementByCoord(v.li, v.co, 1).style.borderTop = "none";
                 hasTop = true;
             }
             if (isDirRoad(v.li + 1, v.co, "vertical")) {
@@ -600,16 +620,22 @@ function updateRoadsCount(li, co) {
                     setRoadCount(v.li + 1, v.co, 2);
                     count = 1;
                 } else setRoadCount(v.li + 1, v.co, count + 1);
+                getElementByCoord(v.li, v.co, 1).style.borderBottom = "none";
+                getElementByCoord(v.li + 1, v.co, 1).style.borderTop = "none";
                 count += 2;
                 let li_idx = v.li + 2;
                 while (isDirRoad(li_idx, v.co, "vertical")) {
                     setRoadCount(li_idx, v.co, count);
+                    getElementByCoord(li_idx, v.co, 1).style.borderTop = "none";
                     count++;
                     li_idx++;
                 }
             }
         }
-        if (getRoadDir(v.li, v.co) == "null") setRoadCount(v.li, v.co, "");
+        if (getRoadDir(v.li, v.co) == "null") {
+            setRoadCount(v.li, v.co, "");
+            refreshRoadsBorder(v.li, v.co);
+        }
     }
 }
 
