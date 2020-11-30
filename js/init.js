@@ -29,11 +29,17 @@ function drawChessboard() {
 function clipEdge() {
     for (let i = 1; i <= 58; i++) {
         for (let j = 1; j <= 59 - i; j++) {
+            // if (j == 59 - i) {
+            //     getElementByCoord(i, j).classList.add("triangle-bottomright");
+            // }
             getElementByCoord(i, j).classList.remove("border-full");
             getElementByCoord(i, j).classList.add("border-all-missing");
             getElementByCoord(i, j).setAttribute("out_of_boundary", "true");
         }
         for (let j = i + 59; j <= 116; j++) {
+            // if (j == i + 59) {
+            //     getElementByCoord(i, j).classList.add("triangle-bottomleft");
+            // }
             getElementByCoord(i, j).classList.remove("border-full");
             getElementByCoord(i, j).classList.add("border-all-missing");
             getElementByCoord(i, j).setAttribute("out_of_boundary", "true");
@@ -41,6 +47,9 @@ function clipEdge() {
     }
     for (let i = 60; i <= 116; i++) {
         for (let j = 1; j <= i - 59; j++) {
+            // if (j == i - 59) {
+            // getElementByCoord(i, j).classList.add("triangle-topright");
+            // }
             getElementByCoord(i, j).classList.remove("border-full");
             getElementByCoord(i, j).classList.add("border-all-missing");
             getElementByCoord(i, j).setAttribute("out_of_boundary", "true");
@@ -48,6 +57,9 @@ function clipEdge() {
     }
     for (let i = 59; i <= 116; i++) {
         for (let j = 116; j >= -i + 175; j--) {
+            // if (j == 175 - i) {
+            //     getElementByCoord(i, j).classList.add("triangle-topleft");
+            // }
             getElementByCoord(i, j).classList.remove("border-full");
             getElementByCoord(i, j).classList.add("border-all-missing");
             getElementByCoord(i, j).setAttribute("out_of_boundary", "true");
@@ -62,22 +74,35 @@ function drawBoundary() {
                 continue;
             }
             if (getElementByCoord(i, j - 1) && getElementByCoord(i, j - 1).classList.contains("border-all-missing")) {
-                getElementByCoord(i, j).style.backgroundColor = color_boundary;
                 getElementByCoord(i, j).setAttribute("out_of_boundary", "true");
+                if (i < 59 && i > 1) {
+                    getElementByCoord(i, j).classList.add("triangle-bottomright");
+                } else if (i > 59 && i < 116) {
+                    getElementByCoord(i, j).classList.add("triangle-topright");
+                }
                 continue;
             }
             if (getElementByCoord(i, j + 1) && getElementByCoord(i, j + 1).classList.contains("border-all-missing")) {
-                getElementByCoord(i, j).style.backgroundColor = color_boundary;
                 getElementByCoord(i, j).setAttribute("out_of_boundary", "true");
+                if (i < 59) {
+                    getElementByCoord(i, j).classList.add("triangle-bottomleft");
+                } else {
+                    getElementByCoord(i, j).classList.add("triangle-topleft");
+                }
                 continue;
             }
         }
     }
-    getElementByCoord(59, 1).style.backgroundColor = color_boundary;
-    getElementByCoord(59, 1).setAttribute("modify", "false");
-    getElementByCoord(58, 116).style.backgroundColor = color_boundary;
+    getElementByCoord(1, 59).classList.add("angle-top");
+    getElementByCoord(1, 58).classList.add("angle-top-ancilla");
     getElementByCoord(58, 116).style["margin-right"] = "8px";
     getElementByCoord(58, 116).setAttribute("modify", "false");
+    getElementByCoord(58, 116).classList.add("angle-right");
+    getElementByCoord(59, 116).classList.add("angle-right-ancilla");
+    getElementByCoord(116, 58).classList.add("angle-bottom");
+    getElementByCoord(59, 1).setAttribute("modify", "false");
+    getElementByCoord(59, 1).classList.add("angle-left");
+    getElementByCoord(60, 1).classList.add("angle-left-ancilla");
 }
 
 function assignEvent() {
