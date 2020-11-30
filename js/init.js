@@ -76,6 +76,7 @@ function drawBoundary() {
     getElementByCoord(59, 1).style.backgroundColor = color_boundary;
     getElementByCoord(59, 1).setAttribute("modify", "false");
     getElementByCoord(58, 116).style.backgroundColor = color_boundary;
+    getElementByCoord(58, 116).style["margin-right"] = "8px";
     getElementByCoord(58, 116).setAttribute("modify", "false");
 }
 
