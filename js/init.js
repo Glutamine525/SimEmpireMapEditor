@@ -186,7 +186,6 @@ function assignEvent() {
                 if (!cursor.hold) return;
                 if (cursor.hold === "删除建筑") return;
                 if (cursor.hold === "道路") {
-                    // roadsBuffer = [];
                     if (insertBuilding(i, j, 1, "true", "道路", "#000000", color_road, "#000000")) {
                         roadsBuffer.push({ li: i, co: j });
                         cursor.select = cell.id + "-1";

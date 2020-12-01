@@ -790,7 +790,7 @@ function screenshot() {
     document.getElementById("bottom-nav").classList.add("frosted-glass");
     loading.style.display = "block";
     html2canvas(document.querySelector("#map-chessboard"), {
-        useCORS: false,
+        useCORS: true,
         width: 116 * 30,
         scale: 2,
     }).then(function (canvas1) {
