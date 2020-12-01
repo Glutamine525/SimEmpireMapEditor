@@ -454,7 +454,7 @@ Object.defineProperty(cursor, "hold", {
             document.getElementById("hold").innerHTML = newValue;
             if (newValue === "删除建筑") {
                 document.getElementById("hold").style.color = "red";
-                document.getElementById("map-chessboard").style.cursor = `url(./remove.png), default`;
+                document.getElementById("map-chessboard").style.cursor = `url(./img/remove.png), default`;
             } else {
                 document.getElementById("hold").style.color = "";
                 document.getElementById("map-chessboard").style.cursor = "";
