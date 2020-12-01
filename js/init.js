@@ -7,6 +7,7 @@ var startY = -1;
 var nowX = -1;
 var nowY = -1;
 var copiedBuilding = undefined;
+var roadsBuffer = [];
 
 function drawChessboard() {
     let chessboard = document.createElement("div");
@@ -122,6 +123,8 @@ function assignEvent() {
                 if (cursor.hold === "道路") {
                     if (isMouseDown) {
                         if (insertBuilding(i, j, 1, "true", "道路", "#000000", color_road, "#000000")) {
+                            roadsBuffer.push({ li: i, co: j });
+                            // console.log(roadsBuffer);
                             cursor.select = cell.id + "-1";
                             return;
                         }
@@ -183,7 +186,9 @@ function assignEvent() {
                 if (!cursor.hold) return;
                 if (cursor.hold === "删除建筑") return;
                 if (cursor.hold === "道路") {
+                    // roadsBuffer = [];
                     if (insertBuilding(i, j, 1, "true", "道路", "#000000", color_road, "#000000")) {
+                        roadsBuffer.push({ li: i, co: j });
                         cursor.select = cell.id + "-1";
                         return;
                     }
@@ -542,5 +547,5 @@ function init(type) {
     drawBottomNav();
     onChangeScale();
     history.scrollRestoration = "manual";
-    document.getElementById("44-84").scrollIntoView();
+    document.getElementById("44-90").scrollIntoView();
 }

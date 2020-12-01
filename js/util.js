@@ -16,14 +16,11 @@ function getElementByCoord(li, co, size, tmp) {
 }
 
 function isDirRoad(li, co, direction) {
+    let grid = getElementByCoord(li, co, 1);
     if (direction) {
-        return (
-            getElementByCoord(li, co, 1) &&
-            getElementByCoord(li, co, 1).hasAttribute("road") &&
-            getRoadDir(li, co) == direction
-        );
+        return grid && grid.hasAttribute("road") && getRoadDir(li, co) == direction;
     }
-    return getElementByCoord(li, co, 1) && getElementByCoord(li, co, 1).hasAttribute("road");
+    return grid && grid.hasAttribute("road");
 }
 
 function getRoadDir(li, co) {
@@ -40,16 +37,28 @@ function getRoadDir(li, co) {
 }
 
 function setRoadCount(li, co, count) {
-    getElementByCoord(li, co, 1).firstElementChild.innerHTML = count;
+    // getElementByCoord(li, co, 1).firstElementChild.innerHTML = count;
+    getElementByCoord(li, co, 1).setAttribute("road_count", count);
 }
 
 function getRoadCount(li, co) {
-    if (getElementByCoord(li, co, 1).firstElementChild.innerHTML)
-        return Number(getElementByCoord(li, co, 1).firstElementChild.innerHTML);
-    else return 0;
+    // if (getElementByCoord(li, co, 1).firstElementChild.innerHTML)
+    //     return Number(getElementByCoord(li, co, 1).firstElementChild.innerHTML);
+    // else return 0;
+    let count = Number(getElementByCoord(li, co, 1).getAttribute("road_count"));
+    return count === 1 ? 0 : count;
 }
 
-function insertBuilding(li, co, size, modify, text, color, background_color, border_color, range_size, tmp, special) {
+function toggleRoadCount(li, co, show) {
+    let grid = getElementByCoord(li, co, 1);
+    if (!show) {
+        grid.firstElementChild.innerHTML = "";
+    } else {
+        grid.firstElementChild.innerHTML = grid.getAttribute("road_count");
+    }
+}
+
+function isGridEmpty(li, co, size) {
     for (let i = li; i < li + size; i++) {
         for (let j = co; j < co + size; j++) {
             let cell = getElementByCoord(i, j);
@@ -64,6 +73,25 @@ function insertBuilding(li, co, size, modify, text, color, background_color, bor
             }
         }
     }
+    return true;
+}
+
+function insertBuilding(li, co, size, modify, text, color, background_color, border_color, range_size, tmp, special) {
+    // for (let i = li; i < li + size; i++) {
+    //     for (let j = co; j < co + size; j++) {
+    //         let cell = getElementByCoord(i, j);
+    //         if (cell.getAttribute("modify") === "false") {
+    //             return false;
+    //         }
+    //         if (cell.getAttribute("out_of_boundary") === "true") {
+    //             return false;
+    //         }
+    //         if (cell.hasAttribute("occupied")) {
+    //             return false;
+    //         }
+    //     }
+    // }
+    if (!isGridEmpty(li, co, size)) return false;
     let building = document.createElement("span");
     building.classList.add("building");
     building.style.setProperty("--count", size);
@@ -74,6 +102,7 @@ function insertBuilding(li, co, size, modify, text, color, background_color, bor
         if (!tmp) {
             let road_counter = document.createElement("span");
             building.appendChild(road_counter);
+            building.setAttribute("road_count", 1);
             if (isDirRoad(li, co - 1)) {
                 getElementByCoord(li, co - 1, 1).style.borderRight = "none";
                 building.style.borderLeft = "none";
@@ -141,7 +170,6 @@ function insertBuilding(li, co, size, modify, text, color, background_color, bor
         cursor.select = building.id;
         building_deleter();
     };
-
     building.onmouseenter = () => {
         if (isMouseDown) {
             cursor.select = building.id;
@@ -158,6 +186,57 @@ function insertBuilding(li, co, size, modify, text, color, background_color, bor
         cursor.select = building.id;
         building_deleter();
         building_replacer();
+    };
+    building.onmouseup = () => {
+        if (cursor.hold === "道路" && roadsBuffer.length > 1) {
+            if (li === roadsBuffer[0].li) {
+                if (roadsBuffer[0].co > co) {
+                    for (let k = roadsBuffer[0].co; k >= co; k--) {
+                        if (!isGridEmpty(li, k, 1) && !isDirRoad(li, k)) return;
+                    }
+                    for (let k of roadsBuffer) {
+                        removeBuilding(k.li, k.co, 1);
+                    }
+                    for (let k = roadsBuffer[0].co; k >= co; k--) {
+                        insertBuilding(li, k, 1, "true", "道路", "#000000", color_road, "#000000");
+                    }
+                } else {
+                    for (let k = roadsBuffer[0].co; k <= co; k++) {
+                        if (!isGridEmpty(li, k, 1) && !isDirRoad(li, k)) return;
+                    }
+                    for (let k of roadsBuffer) {
+                        removeBuilding(k.li, k.co, 1);
+                    }
+                    for (let k = roadsBuffer[0].co; k <= co; k++) {
+                        insertBuilding(li, k, 1, "true", "道路", "#000000", color_road, "#000000");
+                    }
+                }
+            }
+            if (co === roadsBuffer[0].co) {
+                if (roadsBuffer[0].li > li) {
+                    for (let k = roadsBuffer[0].li; k >= li; k--) {
+                        if (!isGridEmpty(k, co, 1) && !isDirRoad(k, co)) return;
+                    }
+                    for (let k of roadsBuffer) {
+                        removeBuilding(k.li, k.co, 1);
+                    }
+                    for (let k = roadsBuffer[0].li; k >= li; k--) {
+                        insertBuilding(k, co, 1, "true", "道路", "#000000", color_road, "#000000");
+                    }
+                } else {
+                    for (let k = roadsBuffer[0].li; k <= li; k++) {
+                        if (!isGridEmpty(k, co, 1) && !isDirRoad(k, co)) return;
+                    }
+                    for (let k of roadsBuffer) {
+                        removeBuilding(k.li, k.co, 1);
+                    }
+                    for (let k = roadsBuffer[0].li; k <= li; k++) {
+                        insertBuilding(k, co, 1, "true", "道路", "#000000", color_road, "#000000");
+                    }
+                }
+            }
+        }
+        roadsBuffer = [];
     };
     if (range_size) {
         building.setAttribute("range_size", range_size);
@@ -542,12 +621,14 @@ function clearAroundBuildingProtectionNumber(li, co, size, range_size) {
 
 function refreshRoadsBorder(li, co) {
     if (isDirRoad(li - 1, co)) {
-        getElementByCoord(li - 1, co, 1).style.borderBottom = "1px solid #009be8";
-        getElementByCoord(li, co, 1).style.borderTop = "1px solid #009be8";
+        getElementByCoord(li - 1, co, 1).style.borderBottom = "1px solid #a8a8a8";
+        getElementByCoord(li, co, 1).style.borderTop = "1px solid #a8a8a8";
+        if (isDirRoad(li - 1, co, "vertical") || isDirRoad(li - 1, co, "null")) toggleRoadCount(li, co, true);
     }
     if (isDirRoad(li + 1, co)) {
-        getElementByCoord(li, co, 1).style.borderBottom = "1px solid #009be8";
-        getElementByCoord(li + 1, co, 1).style.borderTop = "1px solid #009be8";
+        getElementByCoord(li, co, 1).style.borderBottom = "1px solid #a8a8a8";
+        getElementByCoord(li + 1, co, 1).style.borderTop = "1px solid #a8a8a8";
+        if (isDirRoad(li + 1, co, "vertical") || isDirRoad(li + 1, co, "null")) toggleRoadCount(li, co, true);
     }
 }
 
@@ -569,7 +650,12 @@ function updateRoadsCount(li, co) {
                 if (!count) {
                     setRoadCount(v.li, v.co - 1, 1);
                     setRoadCount(v.li, v.co, 2);
-                } else setRoadCount(v.li, v.co, count + 1);
+                    toggleRoadCount(v.li, v.co - 1, true);
+                } else {
+                    setRoadCount(v.li, v.co, count + 1);
+                    if (count > 1) toggleRoadCount(v.li, v.co - 1, false);
+                }
+                toggleRoadCount(v.li, v.co, true);
                 getElementByCoord(v.li, v.co - 1, 1).style.borderRight = "none";
                 getElementByCoord(v.li, v.co, 1).style.borderLeft = "none";
                 refreshRoadsBorder(v.li, v.co - 1);
@@ -581,17 +667,24 @@ function updateRoadsCount(li, co) {
                 if (!count || !hasLeft) {
                     setRoadCount(v.li, v.co, 1);
                     setRoadCount(v.li, v.co + 1, 2);
+                    toggleRoadCount(v.li, v.co, true);
                     count = 1;
-                } else setRoadCount(v.li, v.co + 1, count + 1);
+                } else {
+                    setRoadCount(v.li, v.co + 1, count + 1);
+                    if (count > 1) toggleRoadCount(v.li, v.co, false);
+                }
+                toggleRoadCount(v.li, v.co + 1, true);
                 getElementByCoord(v.li, v.co, 1).style.borderRight = "none";
                 getElementByCoord(v.li, v.co + 1, 1).style.borderLeft = "none";
                 refreshRoadsBorder(v.li, v.co);
                 refreshRoadsBorder(v.li, v.co + 1);
-                if (v.li != li) continue;
+                // if (v.li != li) continue;
                 count += 2;
                 let co_idx = v.co + 2;
                 while (isDirRoad(v.li, co_idx, "horizontal")) {
                     setRoadCount(v.li, co_idx, count);
+                    toggleRoadCount(v.li, co_idx - 1, false);
+                    toggleRoadCount(v.li, co_idx, true);
                     getElementByCoord(v.li, co_idx, 1).style.borderLeft = "none";
                     refreshRoadsBorder(v.li, co_idx - 1);
                     count++;
@@ -608,7 +701,12 @@ function updateRoadsCount(li, co) {
                 if (!count) {
                     setRoadCount(v.li - 1, v.co, 1);
                     setRoadCount(v.li, v.co, 2);
-                } else setRoadCount(v.li, v.co, count + 1);
+                    toggleRoadCount(v.li - 1, v.co, true);
+                } else {
+                    setRoadCount(v.li, v.co, count + 1);
+                    if (count > 1) toggleRoadCount(v.li - 1, v.co, false);
+                }
+                toggleRoadCount(v.li, v.co, true);
                 getElementByCoord(v.li - 1, v.co, 1).style.borderBottom = "none";
                 getElementByCoord(v.li, v.co, 1).style.borderTop = "none";
                 hasTop = true;
@@ -618,14 +716,21 @@ function updateRoadsCount(li, co) {
                 if (!count || !hasTop) {
                     setRoadCount(v.li, v.co, 1);
                     setRoadCount(v.li + 1, v.co, 2);
+                    toggleRoadCount(v.li, v.co, true);
                     count = 1;
-                } else setRoadCount(v.li + 1, v.co, count + 1);
+                } else {
+                    setRoadCount(v.li + 1, v.co, count + 1);
+                    if (count > 1) toggleRoadCount(v.li, v.co, false);
+                }
+                toggleRoadCount(v.li + 1, v.co, true);
                 getElementByCoord(v.li, v.co, 1).style.borderBottom = "none";
                 getElementByCoord(v.li + 1, v.co, 1).style.borderTop = "none";
                 count += 2;
                 let li_idx = v.li + 2;
                 while (isDirRoad(li_idx, v.co, "vertical")) {
                     setRoadCount(li_idx, v.co, count);
+                    toggleRoadCount(li_idx - 1, v.co, false);
+                    toggleRoadCount(li_idx, v.co, true);
                     getElementByCoord(li_idx, v.co, 1).style.borderTop = "none";
                     count++;
                     li_idx++;
@@ -634,6 +739,7 @@ function updateRoadsCount(li, co) {
         }
         if (getRoadDir(v.li, v.co) == "null") {
             setRoadCount(v.li, v.co, "");
+            toggleRoadCount(v.li, v.co, false);
             refreshRoadsBorder(v.li, v.co);
         }
     }
