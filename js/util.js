@@ -203,8 +203,8 @@ function insertBuilding(li, co, size, modify, text, color, background_color, bor
         building_deleter();
     };
     building.onmouseenter = () => {
-        if (isMouseDown) {
-            cursor.select = building.id;
+        if (isMouseDown && modify === "true") {
+            if (cursor.hold === "删除建筑") cursor.select = building.id;
             building_deleter();
             building_replacer();
             return;

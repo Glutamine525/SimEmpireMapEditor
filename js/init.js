@@ -112,7 +112,6 @@ function assignEvent() {
                     if (isMouseDown) {
                         if (insertBuilding(i, j, 1, "true", "道路", "#000000", color_road, "#000000")) {
                             roadsBuffer.push({ li: i, co: j });
-                            // console.log(roadsBuffer);
                             cursor.select = cell.id + "-1";
                             return;
                         }
