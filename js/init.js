@@ -30,17 +30,11 @@ function drawChessboard() {
 function clipEdge() {
     for (let i = 1; i <= 58; i++) {
         for (let j = 1; j <= 59 - i; j++) {
-            // if (j == 59 - i) {
-            //     getElementByCoord(i, j).classList.add("triangle-bottomright");
-            // }
             getElementByCoord(i, j).classList.remove("border-full");
             getElementByCoord(i, j).classList.add("border-all-missing");
             getElementByCoord(i, j).setAttribute("out_of_boundary", "true");
         }
         for (let j = i + 59; j <= 116; j++) {
-            // if (j == i + 59) {
-            //     getElementByCoord(i, j).classList.add("triangle-bottomleft");
-            // }
             getElementByCoord(i, j).classList.remove("border-full");
             getElementByCoord(i, j).classList.add("border-all-missing");
             getElementByCoord(i, j).setAttribute("out_of_boundary", "true");
@@ -48,9 +42,6 @@ function clipEdge() {
     }
     for (let i = 60; i <= 116; i++) {
         for (let j = 1; j <= i - 59; j++) {
-            // if (j == i - 59) {
-            // getElementByCoord(i, j).classList.add("triangle-topright");
-            // }
             getElementByCoord(i, j).classList.remove("border-full");
             getElementByCoord(i, j).classList.add("border-all-missing");
             getElementByCoord(i, j).setAttribute("out_of_boundary", "true");
@@ -58,9 +49,6 @@ function clipEdge() {
     }
     for (let i = 59; i <= 116; i++) {
         for (let j = 116; j >= -i + 175; j--) {
-            // if (j == 175 - i) {
-            //     getElementByCoord(i, j).classList.add("triangle-topleft");
-            // }
             getElementByCoord(i, j).classList.remove("border-full");
             getElementByCoord(i, j).classList.add("border-all-missing");
             getElementByCoord(i, j).setAttribute("out_of_boundary", "true");
@@ -224,16 +212,19 @@ function drawBarrier(type) {
         let unit = v.split("-");
         insertBuilding(Number(unit[0]), Number(unit[1]), 1, "false", "", "#000000", color_mountain, "#000000");
         getElementByCoord(Number(unit[0]), Number(unit[1]), 1).setAttribute("barrier", "true");
+        optimizeBarrierBoundary(Number(unit[0]), Number(unit[1]), color_mountain);
     });
     coord_barrier_tree[type - 3].map(function (v) {
         let unit = v.split("-");
         insertBuilding(Number(unit[0]), Number(unit[1]), 1, "false", "", "#000000", color_tree, "#000000");
         getElementByCoord(Number(unit[0]), Number(unit[1]), 1).setAttribute("barrier", "true");
+        optimizeBarrierBoundary(Number(unit[0]), Number(unit[1]), color_tree);
     });
     coord_barrier_water[type - 3].map(function (v) {
         let unit = v.split("-");
         insertBuilding(Number(unit[0]), Number(unit[1]), 1, "false", "", "#000000", color_water, "#000000");
         getElementByCoord(Number(unit[0]), Number(unit[1]), 1).setAttribute("barrier", "true");
+        optimizeBarrierBoundary(Number(unit[0]), Number(unit[1]), color_water);
     });
 }
 

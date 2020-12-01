@@ -56,6 +56,7 @@ function onClickNoWood(type) {
             let unit = v.split("-");
             insertBuilding(Number(unit[0]), Number(unit[1]), 1, "false", "", "#000000", color_tree, "#000000");
             getElementByCoord(Number(unit[0]), Number(unit[1]), 1).setAttribute("barrier", "true");
+            optimizeBarrierBoundary(Number(unit[0]), Number(unit[1]), color_tree);
         });
     }
 }

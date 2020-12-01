@@ -15,6 +15,56 @@ function getElementByCoord(li, co, size, tmp) {
     return document.getElementById(getID(li, co, size, tmp));
 }
 
+function colorRGB2Hex(color) {
+    var rgb = color.split(",");
+    var r = parseInt(rgb[0].split("(")[1]);
+    var g = parseInt(rgb[1]);
+    var b = parseInt(rgb[2].split(")")[0]);
+    var hex = "#" + ((1 << 24) + (r << 16) + (g << 8) + b).toString(16).slice(1);
+    return hex;
+}
+
+function optimizeBarrierBoundary(li, co, background_color) {
+    let grid, adjGrid;
+    grid = getElementByCoord(li, co, 1);
+    adjGrid = getElementByCoord(li, co - 1, 1);
+    if (
+        adjGrid &&
+        adjGrid.getAttribute("barrier") === "true" &&
+        colorRGB2Hex(adjGrid.style.backgroundColor) === background_color
+    ) {
+        adjGrid.style.borderRight = "none";
+        grid.style.borderLeft = "none";
+    }
+    adjGrid = getElementByCoord(li, co + 1, 1);
+    if (
+        adjGrid &&
+        adjGrid.getAttribute("barrier") === "true" &&
+        colorRGB2Hex(adjGrid.style.backgroundColor) === background_color
+    ) {
+        adjGrid.style.borderLeft = "none";
+        grid.style.borderRight = "none";
+    }
+    adjGrid = getElementByCoord(li - 1, co, 1);
+    if (
+        adjGrid &&
+        adjGrid.getAttribute("barrier") === "true" &&
+        colorRGB2Hex(adjGrid.style.backgroundColor) === background_color
+    ) {
+        adjGrid.style.borderBottom = "none";
+        grid.style.borderTop = "none";
+    }
+    adjGrid = getElementByCoord(li + 1, co, 1);
+    if (
+        adjGrid &&
+        adjGrid.getAttribute("barrier") === "true" &&
+        colorRGB2Hex(adjGrid.style.backgroundColor) === background_color
+    ) {
+        adjGrid.style.borderTop = "none";
+        grid.style.borderBottom = "none";
+    }
+}
+
 function isDirRoad(li, co, direction) {
     let grid = getElementByCoord(li, co, 1);
     if (direction) {
@@ -37,14 +87,10 @@ function getRoadDir(li, co) {
 }
 
 function setRoadCount(li, co, count) {
-    // getElementByCoord(li, co, 1).firstElementChild.innerHTML = count;
     getElementByCoord(li, co, 1).setAttribute("road_count", count);
 }
 
 function getRoadCount(li, co) {
-    // if (getElementByCoord(li, co, 1).firstElementChild.innerHTML)
-    //     return Number(getElementByCoord(li, co, 1).firstElementChild.innerHTML);
-    // else return 0;
     let count = Number(getElementByCoord(li, co, 1).getAttribute("road_count"));
     return count === 1 ? 0 : count;
 }
@@ -77,20 +123,6 @@ function isGridEmpty(li, co, size) {
 }
 
 function insertBuilding(li, co, size, modify, text, color, background_color, border_color, range_size, tmp, special) {
-    // for (let i = li; i < li + size; i++) {
-    //     for (let j = co; j < co + size; j++) {
-    //         let cell = getElementByCoord(i, j);
-    //         if (cell.getAttribute("modify") === "false") {
-    //             return false;
-    //         }
-    //         if (cell.getAttribute("out_of_boundary") === "true") {
-    //             return false;
-    //         }
-    //         if (cell.hasAttribute("occupied")) {
-    //             return false;
-    //         }
-    //     }
-    // }
     if (!isGridEmpty(li, co, size)) return false;
     let building = document.createElement("span");
     building.classList.add("building");
