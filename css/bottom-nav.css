@@ -1,5 +1,4 @@
 #bottom-nav {
-    /* padding: 5px 5px; */
     width: 100%;
     height: 40px;
     background-color: #eef1f1;
@@ -10,6 +9,7 @@
     line-height: 40px;
     user-select: none;
     border-top: 1px solid black;
+    color: rgb(88, 88, 88);
 }
 
 #bottom-nav ul,
@@ -20,7 +20,7 @@
 }
 
 #bottom-nav ul li {
-    width: calc((100%-20px)/18);
+    width: calc((100%-20px) / 18);
     float: left;
     list-style-type: none;
     line-height: 40px;
@@ -32,6 +32,7 @@
 
 #bottom-nav ul li:hover {
     background: #c5c5c5;
+    color: black;
     overflow: visible;
 }
 
@@ -48,6 +49,6 @@
 }
 
 .submenu-position {
-    margin-top: calc(var(--count)*40px);
+    margin-top: calc(var(--count) * 40px);
     width: 100%;
 }

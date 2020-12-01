@@ -1,5 +1,6 @@
 var html = document.querySelector("html");
 var isMouseDown = false;
+var isDragging = false;
 var startScrollLeft = -1;
 var startScrollTop = -1;
 var startX = -1;
@@ -170,6 +171,7 @@ function assignEvent() {
                 removeBuilding(i, j, building_info.size, true);
             };
             cell.onmousedown = () => {
+                cursor.select = cell.id;
                 if (!cursor.hold) return;
                 if (cursor.hold === "删除建筑") return;
                 if (cursor.hold === "道路") {
@@ -346,6 +348,7 @@ function drawBottomNav(reset) {
                 break;
             case 5:
                 tmp.onclick = () => onClickRemove();
+                tmp.classList.remove("splitter");
                 break;
         }
         container.appendChild(tmp);
@@ -455,7 +458,8 @@ Object.defineProperty(cursor, "hold", {
 
 document.body.onmousedown = (e) => {
     isMouseDown = true;
-    if (!cursor.hold) {
+    if (!cursor.hold && e.clientY > 50 && e.clientY < window.innerHeight - 60) {
+        isDragging = true;
         startScrollLeft = html.scrollLeft;
         startScrollTop = html.scrollTop;
         startX = e.clientX;
@@ -467,7 +471,8 @@ document.body.onmousedown = (e) => {
 
 document.body.onmouseup = () => {
     isMouseDown = false;
-    if (!cursor.hold) {
+    if (!cursor.hold && isDragging) {
+        isDragging = false;
         startScrollLeft = -1;
         startScrollTop = -1;
         startX = -1;
@@ -478,7 +483,7 @@ document.body.onmouseup = () => {
 };
 
 document.body.onmousemove = (e) => {
-    if (!isMouseDown || cursor.hold) return;
+    if (!isDragging || cursor.hold) return;
     nowX = e.clientX;
     nowY = e.clientY;
     html.scrollLeft = startScrollLeft + (startX - nowX);
