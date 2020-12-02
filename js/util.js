@@ -888,7 +888,7 @@ function forgeSign() {
     let aType = document.createElement("a");
     let aNationality = document.createElement("a");
     let aLabel = document.createElement("a");
-    span0.innerHTML = "From the Map Editor Implemented by ";
+    span0.innerHTML = "From the Map Editor " + versionNum + " Implemented by ";
     span1.innerHTML = "Github: ";
     span2.innerHTML = "Email: ";
     a0.innerHTML = "Glutamine525";
