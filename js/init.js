@@ -308,6 +308,7 @@ function drawBottomNav(reset) {
     container.id = "bottom-nav-ul";
     let tmp = document.createElement("li");
     tmp.classList.add("splitter");
+    if (document.getElementById("dark-mode").checked) tmp.classList.add("bottom-nav-splitter-dark");
     tmp.id = "道路";
     tmp.innerHTML = "道路";
     tmp.onclick = () => onClickBuilding("道路");
@@ -315,6 +316,7 @@ function drawBottomNav(reset) {
     label_building.map((v) => {
         let tmp = document.createElement("li");
         tmp.classList.add("splitter");
+        if (document.getElementById("dark-mode").checked) tmp.classList.add("bottom-nav-splitter-dark");
         tmp.id = v;
         tmp.innerHTML = v;
         container.appendChild(tmp);
@@ -322,6 +324,7 @@ function drawBottomNav(reset) {
     label_util.map((v, i) => {
         let tmp = document.createElement("li");
         tmp.classList.add("splitter");
+        if (document.getElementById("dark-mode").checked) tmp.classList.add("bottom-nav-splitter-dark");
         tmp.id = v;
         tmp.innerHTML = v;
         tmp.style.color = "#f54d4d";
@@ -364,6 +367,7 @@ function drawBottomNav(reset) {
         let count = 0;
         div.classList.add("submenu");
         div.classList.add("submenu-position");
+        if (document.getElementById("dark-mode").checked) div.classList.add("submenu-dark");
         building_all[document.getElementById("nationality").value][v].map((w) => {
             let li = document.createElement("li");
             li.id = v + "-" + w.name;

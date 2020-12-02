@@ -908,6 +908,11 @@ function forgeSign() {
     aNationality.style.color = "#f54d4d";
     aLabel.style.color = "inherit";
     span3.style.fontSize = "100px";
+    if (document.getElementById("dark-mode").checked) {
+        a0.classList.toggle("a-dark");
+        a1.classList.toggle("a-dark");
+        a2.classList.toggle("a-dark");
+    }
     span0.appendChild(a0);
     span1.appendChild(a1);
     span2.appendChild(a2);
