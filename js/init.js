@@ -591,4 +591,5 @@ function init(type) {
     onChangeScale();
     history.scrollRestoration = "manual";
     document.getElementById("44-90").scrollIntoView();
+    forgeSign();
 }

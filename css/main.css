@@ -3,6 +3,30 @@
     transform: scale(var(--scale), var(--scale));
 }
 
+#sign {
+    position: absolute;
+    font-weight: bold;
+    font-size: 30px;
+    width: 980px;
+    color: grey;
+    left: 2480px;
+    bottom: 10px;
+}
+
+.sign-rotate {
+    transform: rotate(-45deg);
+    bottom: 1200px !important;
+    left: 2780px !important;
+}
+
+#sign span {
+    float: right;
+}
+
+#sign span a {
+    color: black;
+}
+
 .rotate {
     transform: rotate(45deg) scale(var(--scale), var(--scale)) !important;
 }

@@ -865,10 +865,58 @@ function restoreAfterScreenshot(scale, isRotated) {
     document.getElementById("loading").style.display = "none";
 }
 
+function downloadScreenshot(filename, blob) {
+    let url = URL.createObjectURL(blob);
+    document.getElementById("download").setAttribute("href", url);
+    document.getElementById("download").setAttribute("download", filename);
+    document.getElementById("download").click();
+}
+
+function forgeSign() {
+    if (document.getElementById("sign")) {
+        document.getElementById("map-chessboard").removeChild(document.getElementById("sign"));
+    }
+    let signHtml = document.createElement("div");
+    signHtml.id = "sign";
+    let span0 = document.createElement("span");
+    let span1 = document.createElement("span");
+    let span2 = document.createElement("span");
+    let span3 = document.createElement("span");
+    let a0 = document.createElement("a");
+    let a1 = document.createElement("a");
+    let a2 = document.createElement("a");
+    let aType = document.createElement("a");
+    let aNationality = document.createElement("a");
+    let aLabel = document.createElement("a");
+    span0.innerHTML = "From the Map Editor Implemented by ";
+    span1.innerHTML = "Github: ";
+    span2.innerHTML = "Email: ";
+    a0.innerHTML = "Glutamine525";
+    a1.innerHTML = "https://github.com/Glutamine525/SimEmpireMapEditor";
+    a2.innerHTML = "glutamine525@gmail.com";
+    aType.innerHTML = document.getElementById("type").value.toString() + "木";
+    aNationality.innerHTML = label_nationality[document.getElementById("nationality").value];
+    aLabel.innerHTML = "地图布局";
+    aType.style.color = "blue";
+    aNationality.style.color = "red";
+    aLabel.style.color = "black";
+    span3.style.fontSize = "128px";
+    span0.appendChild(a0);
+    span1.appendChild(a1);
+    span2.appendChild(a2);
+    span3.append(aNationality, aType, aLabel);
+    signHtml.appendChild(span3);
+    signHtml.appendChild(span0);
+    signHtml.appendChild(span1);
+    signHtml.appendChild(span2);
+    document.getElementById("map-chessboard").appendChild(signHtml);
+}
+
 function screenshot() {
     let loading = document.getElementById("loading");
     let record_scale = document.getElementById("scale").value;
     let record_isRotated = document.getElementById("rotate").checked;
+    let sign = document.getElementById("sign");
     clearBuildingRange();
     document.getElementById(cursor.select).classList.remove("cell-selected");
     document.getElementById("scale").value = 1;
@@ -879,11 +927,16 @@ function screenshot() {
     document.getElementById("map-chessboard").classList.add("frosted-glass");
     document.getElementById("bottom-nav").classList.add("frosted-glass");
     loading.style.display = "block";
-    html2canvas(document.querySelector("#map-chessboard"), {
+    let config1 = {
         useCORS: true,
         width: 116 * 30,
         scale: 2,
-    }).then(function (canvas1) {
+    };
+    if (record_isRotated) {
+        sign.classList.add("sign-rotate");
+        config1.width = 116 * 30 + 300;
+    }
+    html2canvas(document.querySelector("#map-chessboard"), config1).then(function (canvas1) {
         let timers = new Date();
         let fullYear = timers.getFullYear();
         let month = timers.getMonth() + 1;
@@ -898,20 +951,21 @@ function screenshot() {
                 img.src = URL.createObjectURL(blob);
                 img.style.transform = "rotate(45deg)";
                 img.setAttribute("crossOrigin", "anonymous");
-                html2canvas(img, { useCORS: true }).then((canvas2) => {
+                let config2 = {
+                    useCORS: true,
+                    x: 499,
+                    y: 3811,
+                    width: 6151,
+                    height: 6151,
+                };
+                html2canvas(img, config2).then((canvas2) => {
                     canvas2.toBlob((blob) => {
-                        var url = URL.createObjectURL(blob);
-                        document.getElementById("download").setAttribute("href", url);
-                        document.getElementById("download").setAttribute("download", filename);
-                        document.getElementById("download").click();
+                        downloadScreenshot(filename, blob);
                         restoreAfterScreenshot(record_scale, record_isRotated);
                     });
                 });
             } else {
-                var url = URL.createObjectURL(blob);
-                document.getElementById("download").setAttribute("href", url);
-                document.getElementById("download").setAttribute("download", filename);
-                document.getElementById("download").click();
+                downloadScreenshot(filename, blob);
                 restoreAfterScreenshot(record_scale, record_isRotated);
             }
         });

@@ -59,15 +59,18 @@ function onClickRotate() {
         document.getElementById("map-chessboard").style.pointerEvents = "none";
         document.getElementById("bottom-nav").style.pointerEvents = "none";
         document.getElementById("截图").style.pointerEvents = "initial";
+        document.getElementById("sign").classList.add("sign-rotate");
     } else {
         document.getElementById("map-chessboard").classList.remove("rotate");
         document.getElementById("map-chessboard").style.pointerEvents = "";
         document.getElementById("bottom-nav").style.pointerEvents = "";
+        document.getElementById("sign").classList.remove("sign-rotate");
     }
 }
 
 function onChangeNationality() {
     drawBottomNav(true);
+    forgeSign();
 }
 
 var last_info = "/3/true/衙门-高宅/#ff0000/#ffff00/#ff0000/0";
@@ -239,4 +242,5 @@ function onChangeType(type) {
     drawBarrier(type);
     drawFixedBuilding(type);
     onClickNoWood(type);
+    forgeSign();
 }

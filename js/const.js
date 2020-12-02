@@ -2889,6 +2889,14 @@ const label_protection_all = {
     Aztaka: ["哨", "维", "医院"],
 };
 
+const label_nationality = {
+    China: "中国",
+    Persian: "波斯",
+    Egypt: "埃及",
+    Greece: "希腊",
+    Aztaka: "阿兹特克",
+};
+
 const building_all = {
     China: building_china,
     Persian: building_persian,
