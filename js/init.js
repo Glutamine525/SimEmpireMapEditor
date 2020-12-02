@@ -569,6 +569,33 @@ document.onkeydown = (e) => {
     }
     if (ctrlKey && keyCode == 86 && copiedBuilding) {
         let unit = cursor.select.split("-");
+        if (
+            unit.length === 3 &&
+            getElementByCoord(Number(unit[0]), Number(unit[1]), Number(unit[2])).hasAttribute("general")
+        ) {
+            let building = getElementByCoord(Number(unit[0]), Number(unit[1]), Number(unit[2]));
+            let innerHTML = building.innerHTML;
+            building.innerHTML =
+                copiedBuilding.text + (innerHTML.indexOf("<") > -1 ? innerHTML.substr(innerHTML.indexOf("<")) : "");
+            building.style.color = copiedBuilding.color;
+            building.style.backgroundColor = copiedBuilding.background_color;
+            building.style.borderColor = copiedBuilding.border_color;
+            building.removeAttribute("general");
+            if (copiedBuilding.range_size) {
+                building.setAttribute("range_size", copiedBuilding.range_size);
+            }
+            if (isPortectionBuilding(copiedBuilding.text)) {
+                building.innerHTML = copiedBuilding.text;
+                building.setAttribute("protection", "true");
+                setAroundBuildingProtectionNumber(
+                    Number(unit[0]),
+                    Number(unit[1]),
+                    copiedBuilding.size,
+                    copiedBuilding.range_size
+                );
+            }
+            return;
+        }
         if (unit.length === 3) return;
         insertBuilding(
             Number(unit[0]),

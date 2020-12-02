@@ -251,6 +251,14 @@ function insertBuilding(li, co, size, modify, text, color, background_color, bor
                 building.style.borderColor = building_info.border_color;
                 if (!tmp) {
                     building.removeAttribute("general");
+                    if (building_info.range_size) {
+                        building.setAttribute("range_size", building_info.range_size);
+                    }
+                    if (isPortectionBuilding(building_info.text)) {
+                        building.innerHTML = building_info.text;
+                        building.setAttribute("protection", "true");
+                        setAroundBuildingProtectionNumber(li, co, size, building_info.range_size);
+                    }
                     cursor.select = building.id;
                 }
             }
