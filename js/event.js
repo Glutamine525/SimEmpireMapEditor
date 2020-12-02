@@ -113,7 +113,8 @@ function onClickSpecialBuilding() {
 function onChangeScale() {
     let scale = document.getElementById("scale").value;
     document.getElementById("scale-value").value = scale;
-    document.getElementById("map-chessboard").style.setProperty("--scale", scale);
+    document.body.style.zoom = scale;
+    document.getElementById("map-chessboard").style.setProperty("--scale", 1);
 }
 
 function onClickExport(type) {
