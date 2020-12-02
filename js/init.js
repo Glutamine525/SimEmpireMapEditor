@@ -399,16 +399,7 @@ Object.defineProperty(cursor, "select", {
         if (document.getElementById(newValue).getAttribute("out_of_boundary") === "true") {
             return;
         }
-        if (cursor.isRangeShowed) {
-            let unit = select.split("-");
-            clearBuildingRange(
-                Number(unit[0]),
-                Number(unit[1]),
-                Number(unit[2]),
-                Number(document.getElementById(select).getAttribute("range_size"))
-            );
-            cursor.isRangeShowed = false;
-        }
+        clearBuildingRange();
         if (document.getElementById(cursor.select)) {
             document.getElementById(cursor.select).classList.remove("cell-selected");
         }
@@ -477,6 +468,7 @@ document.body.onmousedown = (e) => {
             deletionBlockBuffer.li = Math.ceil((e.pageY - 48) / 30);
             deletionBlockBuffer.co = Math.ceil((e.pageX - 7) / 30);
             toggleDeletionBlock(true);
+            clearBuildingRange();
         }
     }
 };

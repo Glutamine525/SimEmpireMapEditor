@@ -459,7 +459,20 @@ function showBuildingRange(li, co, size, range_size) {
     }
 }
 
-function clearBuildingRange(li, co, size, range_size) {
+function clearBuildingRange() {
+    if (cursor.isRangeShowed) {
+        let unit = cursor.select.split("-");
+        clearBuildingRangeCore(
+            Number(unit[0]),
+            Number(unit[1]),
+            Number(unit[2]),
+            Number(document.getElementById(cursor.select).getAttribute("range_size"))
+        );
+        cursor.isRangeShowed = false;
+    }
+}
+
+function clearBuildingRangeCore(li, co, size, range_size) {
     for (let i = li - range_size; i < li + range_size + size; i++) {
         for (let j = co - range_size; j < co + range_size + size; j++) {
             if (i < 1 || j < 1) continue;
@@ -514,16 +527,7 @@ function getBuildingInfoByText(building_text) {
 }
 
 function clearChessboard(barrier) {
-    if (cursor.isRangeShowed) {
-        let unit = select.split("-");
-        clearBuildingRange(
-            Number(unit[0]),
-            Number(unit[1]),
-            Number(unit[2]),
-            Number(document.getElementById(select).getAttribute("range_size"))
-        );
-        cursor.isRangeShowed = false;
-    }
+    clearBuildingRange();
     for (let i = 1; i <= 116; i++) {
         for (let j = 1; j <= 116; j++) {
             if (getElementByCoord(i, j).getAttribute("out_of_boundary") === "true") continue;
@@ -853,16 +857,7 @@ function screenshot() {
     let loading = document.getElementById("loading");
     let record_scale = document.getElementById("scale").value;
     let record_isRotated = document.getElementById("rotate").checked;
-    if (cursor.isRangeShowed) {
-        let unit = cursor.select.split("-");
-        clearBuildingRange(
-            Number(unit[0]),
-            Number(unit[1]),
-            Number(unit[2]),
-            Number(document.getElementById(select).getAttribute("range_size"))
-        );
-        cursor.isRangeShowed = false;
-    }
+    clearBuildingRange();
     document.getElementById(cursor.select).classList.remove("cell-selected");
     document.getElementById("scale").value = 1;
     document.getElementById("rotate").checked = false;

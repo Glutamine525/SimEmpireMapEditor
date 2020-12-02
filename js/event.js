@@ -17,15 +17,7 @@ function onDoubleClickBuilding() {
     if (unit.length !== 3) {
         return;
     }
-    if (cursor.isRangeShowed) {
-        clearBuildingRange(
-            Number(unit[0]),
-            Number(unit[1]),
-            Number(unit[2]),
-            Number(document.getElementById(cursor.select).getAttribute("range_size"))
-        );
-        cursor.isRangeShowed = false;
-    }
+    clearBuildingRange();
     cursor.select = unit[0] + "-" + unit[1];
     if (isPortectionBuilding(building.innerHTML)) {
         clearAroundBuildingProtectionNumber(
