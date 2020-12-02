@@ -8,6 +8,7 @@
         <link rel="stylesheet" type="text/css" href="css/top-nav.css" />
         <link rel="stylesheet" type="text/css" href="css/bottom-nav.css" />
         <link rel="stylesheet" type="text/css" href="css/loading.css" />
+        <link rel="stylesheet" type="text/css" href="css/boundary.css" />
         <script src="js/building_china.js"></script>
         <script src="js/building_persian.js"></script>
         <script src="js/building_egypt.js"></script>
@@ -27,7 +28,7 @@
                 <span class="spinner"></span>
             </div>
         </div>
-        <div id="top-nav">
+        <div id="top-nav" class="top-nav-shadow">
             <span id="type-label">地图类型: </span>
             <span style="margin-right: 20px; top: -1px; position: relative">
                 <select id="type" onchange="onChangeType(this.value)">
@@ -63,6 +64,12 @@
                 <span class="switch-label" data-on="On" data-off="Off"></span>
                 <span class="switch-handle"></span>
             </label>
+            <span id="dark-mode-label">暗色模式: </span>
+            <label class="switch" style="margin-right: 20px">
+                <input id="dark-mode" type="checkbox" class="switch-input" onclick="onClickDarkMode()" />
+                <span class="switch-label" data-on="On" data-off="Off"></span>
+                <span class="switch-handle"></span>
+            </label>
             <span id="scale-label">地图缩放: </span>
             <input
                 type="range"
@@ -79,8 +86,8 @@
             <span id="coord" style="margin-right: 20px">无</span>
             <span id="hold-label">当前选中放置建筑: </span>
             <span id="hold" style="margin-right: 20px">无</span>
-            <span id="author" style="color: red; margin-right: 20px; float: right">作者: 咕噜他命,</span>
-            <span id="version" style="color: red; margin-right: 20px; float: right"></span>
+            <span id="author" style="color: #f54d4d; margin-right: 20px; float: right">作者: 咕噜他命,</span>
+            <span id="version" style="color: #f54d4d; margin-right: 20px; float: right"></span>
             <div id="tip" class="tooltip" style="margin-right: 24px; float: right">
                 <img src="./img/tip.png" style="width: 24px; top: 4px; position: relative" />
                 <span class="tooltiptext">
@@ -113,7 +120,7 @@
     <script src="js/init.js"></script>
 
     <script>
-        var versionNum = "V1.19";
+        var versionNum = "V1.20";
         document.getElementById("version").innerHTML = "版本号: " + versionNum;
         init(Number(document.getElementById("type").value));
     </script>

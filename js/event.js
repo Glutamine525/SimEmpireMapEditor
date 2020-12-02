@@ -68,6 +68,77 @@ function onClickRotate() {
     }
 }
 
+function onClickDarkMode() {
+    if (document.getElementById("dark-mode").checked) {
+        if (!document.getElementById("top-nav").classList.contains("top-nav-shadow-dark") && getScrollTop() != 0) {
+            document.getElementById("top-nav").classList.add("top-nav-shadow-dark");
+        }
+        if (
+            !document.getElementById("bottom-nav").classList.contains("bottom-nav-shadow-dark") &&
+            getScrollTop() + getWindowHeight() != getScrollHeight()
+        ) {
+            document.getElementById("bottom-nav").classList.add("bottom-nav-shadow-dark");
+        }
+    } else {
+        if (document.getElementById("top-nav").classList.contains("top-nav-shadow-dark")) {
+            document.getElementById("top-nav").classList.remove("top-nav-shadow-dark");
+        }
+        if (document.getElementById("bottom-nav").classList.contains("bottom-nav-shadow-dark")) {
+            document.getElementById("bottom-nav").classList.remove("bottom-nav-shadow-dark");
+        }
+    }
+    document.body.classList.toggle("border-all-missing-dark");
+    document.getElementById("sign-name").classList.toggle("a-dark");
+    document.getElementById("sign-github").classList.toggle("a-dark");
+    document.getElementById("sign-email").classList.toggle("a-dark");
+    document.getElementById("top-nav").classList.toggle("top-nav-dark");
+    document.getElementById("bottom-nav").classList.toggle("bottom-nav-dark");
+    for (let v of document.getElementsByClassName("switch")) {
+        v.classList.toggle("switch-dark");
+    }
+    for (let v of document.getElementsByClassName("splitter")) {
+        v.classList.toggle("bottom-nav-splitter-dark");
+    }
+    for (let v of document.getElementsByClassName("submenu")) {
+        v.classList.toggle("submenu-dark");
+    }
+    for (let i = 1; i <= 116; i++) {
+        for (let j = 1; j <= 116; j++) {
+            let cell = getElementByCoord(i, j);
+            if (cell.classList.contains("border-full")) {
+                cell.classList.toggle("border-full-dark");
+            }
+            if (cell.getAttribute("out_of_boundary") === "true") {
+                cell.classList.toggle("border-all-missing-dark");
+            }
+            if (cell.classList.contains("triangle-topleft")) {
+                cell.classList.toggle("triangle-topleft-dark");
+            }
+            if (cell.classList.contains("triangle-topright")) {
+                cell.classList.toggle("triangle-topright-dark");
+            }
+            if (cell.classList.contains("triangle-bottomleft")) {
+                cell.classList.toggle("triangle-bottomleft-dark");
+            }
+            if (cell.classList.contains("triangle-bottomright")) {
+                cell.classList.toggle("triangle-bottomright-dark");
+            }
+            if (cell.classList.contains("angle-top")) {
+                cell.classList.toggle("angle-top-dark");
+            }
+            if (cell.classList.contains("angle-right")) {
+                cell.classList.toggle("angle-right-dark");
+            }
+            if (cell.classList.contains("angle-bottom")) {
+                cell.classList.toggle("angle-bottom-dark");
+            }
+            if (cell.classList.contains("angle-left")) {
+                cell.classList.toggle("angle-left-dark");
+            }
+        }
+    }
+}
+
 function onChangeNationality() {
     drawBottomNav(true);
     forgeSign();

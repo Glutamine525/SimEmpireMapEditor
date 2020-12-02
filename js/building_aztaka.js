@@ -40,7 +40,7 @@ const building_aztaka = {
         },
         {
             name: "牛油果园",
-            text: "牛油果园",
+            text: "牛油果",
             size: 2,
             range_size: 0,
             color: "#000000",
@@ -103,7 +103,7 @@ const building_aztaka = {
         },
         {
             name: "棉花园",
-            text: "棉花",
+            text: "棉花园",
             size: 3,
             range_size: 0,
             color: "#000000",
@@ -363,7 +363,7 @@ const building_aztaka = {
         },
         {
             name: "高等学校",
-            text: "高等",
+            text: "高等学校",
             size: 3,
             range_size: 8,
             color: "#000000",
@@ -372,7 +372,7 @@ const building_aztaka = {
         },
         {
             name: "专业学校",
-            text: "专业",
+            text: "专业学校",
             size: 4,
             range_size: 8,
             color: "#000000",
@@ -381,7 +381,7 @@ const building_aztaka = {
         },
         {
             name: "蹴球场",
-            text: "蹴球",
+            text: "蹴球场",
             size: 4,
             range_size: 9,
             color: "#000000",
@@ -428,7 +428,7 @@ const building_aztaka = {
         },
         {
             name: "智慧神殿",
-            text: "智慧",
+            text: "智慧神殿",
             size: 3,
             range_size: 8,
             color: "#000000",

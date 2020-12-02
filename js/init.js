@@ -324,7 +324,7 @@ function drawBottomNav(reset) {
         tmp.classList.add("splitter");
         tmp.id = v;
         tmp.innerHTML = v;
-        tmp.style.color = "#ff0000";
+        tmp.style.color = "#f54d4d";
         switch (i) {
             case 0:
                 tmp.onclick = () => onClickSpecialBuilding();
@@ -351,7 +351,7 @@ function drawBottomNav(reset) {
                 break;
             case 5:
                 tmp.onclick = () => onClickRemove();
-                tmp.classList.remove("splitter");
+                tmp.style.borderRight = "none";
                 break;
         }
         container.appendChild(tmp);
@@ -577,6 +577,39 @@ document.onkeydown = (e) => {
             copiedBuilding.border_color,
             copiedBuilding.range_size
         );
+    }
+};
+
+window.onscroll = function () {
+    if (getScrollTop() == 0) {
+        document.getElementById("top-nav").classList.remove("top-nav-shadow");
+        if (document.getElementById("dark-mode").checked) {
+            document.getElementById("top-nav").classList.remove("top-nav-shadow-dark");
+        }
+    } else {
+        if (!document.getElementById("top-nav").classList.contains("top-nav-shadow")) {
+            document.getElementById("top-nav").classList.add("top-nav-shadow");
+        }
+        if (document.getElementById("dark-mode").checked) {
+            if (!document.getElementById("top-nav").classList.contains("top-nav-shadow-dark")) {
+                document.getElementById("top-nav").classList.add("top-nav-shadow-dark");
+            }
+        }
+    }
+    if (getScrollTop() + getWindowHeight() == getScrollHeight()) {
+        document.getElementById("bottom-nav").classList.remove("bottom-nav-shadow");
+        if (document.getElementById("dark-mode").checked) {
+            document.getElementById("bottom-nav").classList.remove("bottom-nav-shadow-dark");
+        }
+    } else {
+        if (!document.getElementById("bottom-nav").classList.contains("bottom-nav-shadow")) {
+            document.getElementById("bottom-nav").classList.add("bottom-nav-shadow");
+        }
+        if (document.getElementById("dark-mode").checked) {
+            if (!document.getElementById("bottom-nav").classList.contains("bottom-nav-shadow-dark")) {
+                document.getElementById("bottom-nav").classList.add("bottom-nav-shadow-dark");
+            }
+        }
     }
 };
 

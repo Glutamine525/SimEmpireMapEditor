@@ -893,14 +893,18 @@ function forgeSign() {
     span2.innerHTML = "Email: ";
     a0.innerHTML = "Glutamine525";
     a1.innerHTML = "https://github.com/Glutamine525/SimEmpireMapEditor";
+    a1.href = "https://github.com/Glutamine525/SimEmpireMapEditor";
+    a0.id = "sign-name";
+    a1.id = "sign-github";
+    a2.id = "sign-email";
     a2.innerHTML = "glutamine525@gmail.com";
     aType.innerHTML = document.getElementById("type").value.toString() + "木";
     aNationality.innerHTML = label_nationality[document.getElementById("nationality").value];
     aLabel.innerHTML = "地图布局";
-    aType.style.color = "blue";
-    aNationality.style.color = "red";
-    aLabel.style.color = "black";
-    span3.style.fontSize = "128px";
+    aType.style.color = "#4b4bfd";
+    aNationality.style.color = "#f54d4d";
+    aLabel.style.color = "inherit";
+    span3.style.fontSize = "100px";
     span0.appendChild(a0);
     span1.appendChild(a1);
     span2.appendChild(a2);
@@ -936,6 +940,9 @@ function screenshot() {
         sign.classList.add("sign-rotate");
         config1.width = 116 * 30 + 300;
     }
+    if (document.getElementById("dark-mode").checked) {
+        config1.backgroundColor = "#1b1e2b";
+    }
     html2canvas(document.querySelector("#map-chessboard"), config1).then(function (canvas1) {
         let timers = new Date();
         let fullYear = timers.getFullYear();
@@ -958,6 +965,9 @@ function screenshot() {
                     width: 6151,
                     height: 6151,
                 };
+                if (document.getElementById("dark-mode").checked) {
+                    config2.backgroundColor = "#1b1e2b";
+                }
                 html2canvas(img, config2).then((canvas2) => {
                     canvas2.toBlob((blob) => {
                         downloadScreenshot(filename, blob);
@@ -970,4 +980,42 @@ function screenshot() {
             }
         });
     });
+}
+
+function getScrollTop() {
+    let scrollTop = 0,
+        bodyScrollTop = 0,
+        documentScrollTop = 0;
+    if (document.body) {
+        bodyScrollTop = document.body.scrollTop;
+    }
+    if (document.documentElement) {
+        documentScrollTop = document.documentElement.scrollTop;
+    }
+    scrollTop = bodyScrollTop - documentScrollTop > 0 ? bodyScrollTop : documentScrollTop;
+    return scrollTop;
+}
+
+function getScrollHeight() {
+    let scrollHeight = 0,
+        bodyScrollHeight = 0,
+        documentScrollHeight = 0;
+    if (document.body) {
+        bodyScrollHeight = document.body.scrollHeight;
+    }
+    if (document.documentElement) {
+        documentScrollHeight = document.documentElement.scrollHeight;
+    }
+    scrollHeight = bodyScrollHeight - documentScrollHeight > 0 ? bodyScrollHeight : documentScrollHeight;
+    return scrollHeight;
+}
+
+function getWindowHeight() {
+    var windowHeight = 0;
+    if (document.compatMode == "CSS1Compat") {
+        windowHeight = document.documentElement.clientHeight;
+    } else {
+        windowHeight = document.body.clientHeight;
+    }
+    return windowHeight;
 }

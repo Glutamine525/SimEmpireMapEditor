@@ -9,7 +9,26 @@
     top: 0;
     line-height: 30px;
     user-select: none;
-    border-bottom: 1px solid black;
+    border-bottom: 1px solid #9a9a9a;
+    transition: all 0.25s;
+}
+
+.top-nav-shadow {
+    box-shadow: 0px 3px 5px #9a9a9a;
+}
+
+.top-nav-shadow-dark {
+    box-shadow: 0px 3px 5px #11131b !important;
+}
+
+.top-nav-dark {
+    color: #eef1f1 !important;
+    background-color: #1b1e2b !important;
+    border-bottom: 1px solid #11131b !important;
+}
+
+.top-nav-dark img {
+    color: red;
 }
 
 .switch {
@@ -28,6 +47,14 @@
     background-image: -o-linear-gradient(top, #eeeeee, white 25px);
     background-image: linear-gradient(to bottom, #eeeeee, white 25px);
     top: 3px;
+}
+
+.switch-dark {
+    box-shadow: inset 0 -1px #292d3e, inset 0 1px 1px rgba(0, 0, 0, 0.05);
+    background-image: -webkit-linear-gradient(top, #292d3e, #292d3e 25px);
+    background-image: -moz-linear-gradient(top, #292d3e, #292d3e 25px);
+    background-image: -o-linear-gradient(top, #292d3e, #292d3e 25px);
+    background-image: linear-gradient(to bottom, #292d3e, #292d3e 25px);
 }
 
 .switch-input {
@@ -60,7 +87,7 @@
 .switch-label:after {
     position: absolute;
     top: 50%;
-    margin-top: -.5em;
+    margin-top: -0.5em;
     line-height: 1;
     -webkit-transition: inherit;
     -moz-transition: inherit;
@@ -83,16 +110,16 @@
     opacity: 0;
 }
 
-.switch-input:checked~.switch-label {
+.switch-input:checked ~ .switch-label {
     background: #47a8d8;
     box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.15), inset 0 0 3px rgba(0, 0, 0, 0.2);
 }
 
-.switch-input:checked~.switch-label:before {
+.switch-input:checked ~ .switch-label:before {
     opacity: 0;
 }
 
-.switch-input:checked~.switch-label:after {
+.switch-input:checked ~ .switch-label:after {
     opacity: 1;
 }
 
@@ -116,7 +143,7 @@
 }
 
 .switch-handle:before {
-    content: '';
+    content: "";
     position: absolute;
     top: 50%;
     left: 50%;
@@ -132,7 +159,7 @@
     background-image: linear-gradient(to bottom, #eeeeee, white);
 }
 
-.switch-input:checked~.switch-handle {
+.switch-input:checked ~ .switch-handle {
     left: 40px;
     box-shadow: -1px 1px 5px rgba(0, 0, 0, 0.2);
 }
