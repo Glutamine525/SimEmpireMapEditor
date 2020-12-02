@@ -437,6 +437,7 @@ function showBuildingRange(li, co, size, range_size) {
             if (i < 1 || j < 1) continue;
             if (i > 116 || j > 116) continue;
             let cell = getElementByCoord(i, j);
+            if (cell.getAttribute("out_of_boundary") === "true") continue;
             cell.classList.add("building-range");
             if (cell.hasAttribute("occupied")) {
                 document.getElementById(cell.getAttribute("occupied")).classList.add("building-range");
@@ -448,6 +449,7 @@ function showBuildingRange(li, co, size, range_size) {
             if (i < 1 || j < 1) continue;
             if (i > 116 || j > 116) continue;
             let cell = getElementByCoord(i, j);
+            if (cell.getAttribute("out_of_boundary") === "true") continue;
             cell.classList.add("building-range");
             if (cell.hasAttribute("occupied")) {
                 document.getElementById(cell.getAttribute("occupied")).classList.add("building-range");
@@ -463,6 +465,7 @@ function showBuildingRange(li, co, size, range_size) {
             if (i < 1 || j < 1) continue;
             if (i > 116 || j > 116) continue;
             let cell = getElementByCoord(i, j);
+            if (cell.getAttribute("out_of_boundary") === "true") continue;
             cell.classList.add("building-range");
             if (cell.hasAttribute("occupied")) {
                 document.getElementById(cell.getAttribute("occupied")).classList.add("building-range");

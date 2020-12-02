@@ -557,7 +557,7 @@ document.onkeydown = (e) => {
         copiedBuilding.color = building.style.color;
         copiedBuilding.background_color = building.style.backgroundColor;
         copiedBuilding.border_color = building.style.borderColor;
-        if (building.hasAttribute("rang_size")) {
+        if (building.hasAttribute("range_size")) {
             copiedBuilding.range_size = Number(building.getAttribute("range_size"));
         } else {
             copiedBuilding.range_size = 0;
