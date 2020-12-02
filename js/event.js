@@ -64,8 +64,13 @@ function onClickNoWood(type) {
 function onClickRotate() {
     if (document.getElementById("rotate").checked) {
         document.getElementById("map-chessboard").classList.add("rotate");
+        document.getElementById("map-chessboard").style.pointerEvents = "none";
+        document.getElementById("bottom-nav").style.pointerEvents = "none";
+        document.getElementById("截图").style.pointerEvents = "initial";
     } else {
         document.getElementById("map-chessboard").classList.remove("rotate");
+        document.getElementById("map-chessboard").style.pointerEvents = "";
+        document.getElementById("bottom-nav").style.pointerEvents = "";
     }
 }
 

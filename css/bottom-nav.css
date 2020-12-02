@@ -52,3 +52,16 @@
     margin-top: calc(var(--count) * 40px);
     width: 100%;
 }
+
+#deletion-block {
+    z-index: 30;
+    width: 200px;
+    height: 160px;
+    background-color: #ff00003f;
+    border: 1px solid #ff00008f;
+    left: 1500px;
+    top: 800px;
+    position: absolute;
+    box-sizing: border-box;
+    display: none;
+}

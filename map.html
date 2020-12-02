@@ -64,7 +64,7 @@
                 <span class="switch-handle"></span>
             </label>
             <span id="scale-label">地图缩放: </span>
-            <input type="range" id="scale" min="0.5" max="1.5" step="0.1" onchange="onChangeScale()" />
+            <input type="range" id="scale" min="0.5" max="1.5" step="0.1" onchange="onChangeScale()" disabled="true" />
             <output id="scale-value" for="scale" style="margin-right: 20px">1</output>
             <span id="coord-label">当前选中坐标(横-纵): </span>
             <span id="coord" style="margin-right: 20px">无</span>
@@ -72,9 +72,11 @@
             <span id="hold" style="margin-right: 20px">无</span>
             <span id="author" style="color: red; margin-right: 20px; float: right">作者: 咕噜他命,</span>
             <span id="version" style="color: red; margin-right: 20px; float: right"></span>
-            <div id="tip" class="tooltip" style="margin-right: 20px; float: right">
-                <img src="./img/tip.png" style="width: 20px; top: 4px; position: relative" />
+            <div id="tip" class="tooltip" style="margin-right: 24px; float: right">
+                <img src="./img/tip.png" style="width: 24px; top: 4px; position: relative" />
                 <span class="tooltiptext">
+                    开启旋转地图后，禁止编辑，只可截图
+                    <br />
                     没有选中放置建筑时，可拖动地图
                     <br />
                     双击建筑可以删除
@@ -90,7 +92,9 @@
             </div>
         </div>
         <div style="height: 49px"></div>
-        <div id="map-chessboard"></div>
+        <div id="map-chessboard">
+            <div id="deletion-block"></div>
+        </div>
         <div style="height: 49px"></div>
         <div id="bottom-nav"></div>
         <a href="" id="download" download="" style="display: none"></a>

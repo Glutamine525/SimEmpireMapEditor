@@ -104,6 +104,61 @@ function toggleRoadCount(li, co, show) {
     }
 }
 
+function setDeletionBlock(left, top, width, height) {
+    if (width < 0 && height > 0) {
+        width = -width;
+        left -= width;
+    }
+    if (width > 0 && height < 0) {
+        height = -height;
+        top -= height;
+    }
+    if (width < 0 && height < 0) {
+        width = -width;
+        left -= width;
+        height = -height;
+        top -= height;
+    }
+    deletionBlock.style.left = left + "px";
+    deletionBlock.style.top = top + "px";
+    deletionBlock.style.width = width + "px";
+    deletionBlock.style.height = height + "px";
+}
+
+function toggleDeletionBlock(show) {
+    if (show) {
+        deletionBlock.style.display = "block";
+    } else {
+        deletionBlock.style.display = "none";
+    }
+}
+
+function removeBuildingsInBlock(li, co, width, height) {
+    if (width < 0 && height >= 0) {
+        width = -width;
+        co -= width;
+    }
+    if (width >= 0 && height < 0) {
+        height = -height;
+        li -= height;
+    }
+    if (width < 0 && height < 0) {
+        width = -width;
+        co -= width;
+        height = -height;
+        li -= height;
+    }
+    for (let i = li; i <= li + height; i++) {
+        for (let j = co; j <= co + width; j++) {
+            let cell = document.getElementById(i + "-" + j);
+            if (cell.hasAttribute("occupied")) {
+                let unit = cell.getAttribute("occupied").split("-");
+                removeBuilding(Number(unit[0]), Number(unit[1]), Number(unit[2]));
+            }
+        }
+    }
+}
+
 function isGridEmpty(li, co, size) {
     for (let i = li; i < li + size; i++) {
         for (let j = co; j < co + size; j++) {
@@ -158,11 +213,6 @@ function insertBuilding(li, co, size, modify, text, color, background_color, bor
         building.style.backgroundColor = background_color;
         building.style.borderColor = border_color;
     }
-    // if (modify && special) {
-    //     building.setAttribute("belong", "special")
-    // } else if (modify) {
-    //     building.setAttribute("belong", getBuildingInfoByText(text).join("-"))
-    // }
     if (text === "2x2" || text === "3x3" || text === "4x4" || text === "5x5") {
         building.setAttribute("general", size);
     }
@@ -199,13 +249,14 @@ function insertBuilding(li, co, size, modify, text, color, background_color, bor
         onClickCancle();
     };
     building.onclick = () => {
+        if (cursor.hold === "删除建筑") return;
         cursor.select = building.id;
-        building_deleter();
+        // building_deleter();
     };
     building.onmouseenter = () => {
         if (isMouseDown && modify === "true") {
-            if (cursor.hold === "删除建筑") cursor.select = building.id;
-            building_deleter();
+            // if (cursor.hold === "删除建筑") cursor.select = building.id;
+            // building_deleter();
             building_replacer();
             return;
         }
@@ -215,8 +266,9 @@ function insertBuilding(li, co, size, modify, text, color, background_color, bor
         building_replacer(true, true);
     };
     building.onmousedown = () => {
+        if (cursor.hold === "删除建筑") return;
         cursor.select = building.id;
-        building_deleter();
+        // building_deleter();
         building_replacer();
     };
     building.onmouseup = () => {
@@ -710,7 +762,6 @@ function updateRoadsCount(li, co) {
                 getElementByCoord(v.li, v.co + 1, 1).style.borderLeft = "none";
                 refreshRoadsBorder(v.li, v.co);
                 refreshRoadsBorder(v.li, v.co + 1);
-                // if (v.li != li) continue;
                 count += 2;
                 let co_idx = v.co + 2;
                 while (isDirRoad(v.li, co_idx, "horizontal")) {

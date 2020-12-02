@@ -9,6 +9,8 @@ var nowX = -1;
 var nowY = -1;
 var copiedBuilding = undefined;
 var roadsBuffer = [];
+var deletionBlockBuffer = {};
+var deletionBlock = document.getElementById("deletion-block");
 
 function drawChessboard() {
     let chessboard = document.createElement("div");
@@ -102,6 +104,7 @@ function assignEvent() {
             if (cell.getAttribute("out_of_boundary") === "true") continue;
             if (cell.getAttribute("modify") === "false") continue;
             cell.onclick = () => {
+                if (cursor.hold === "删除建筑") return;
                 cursor.select = cell.id;
             };
             cell.onmouseenter = () => {
@@ -170,10 +173,10 @@ function assignEvent() {
                 let building_info = getBuildingInfo(label[0], label[1]);
                 removeBuilding(i, j, building_info.size, true);
             };
-            cell.onmousedown = () => {
+            cell.onmousedown = (e) => {
+                if (cursor.hold === "删除建筑") return;
                 cursor.select = cell.id;
                 if (!cursor.hold) return;
-                if (cursor.hold === "删除建筑") return;
                 if (cursor.hold === "道路") {
                     if (insertBuilding(i, j, 1, "true", "道路", "#000000", color_road, "#000000")) {
                         roadsBuffer.push({ li: i, co: j });
@@ -447,7 +450,6 @@ Object.defineProperty(cursor, "hold", {
             document.getElementById("hold").innerHTML = newValue;
             if (newValue === "删除建筑") {
                 document.getElementById("hold").style.color = "red";
-                document.getElementById("map-chessboard").style.cursor = `url(./img/remove.png), default`;
             } else {
                 document.getElementById("hold").style.color = "";
                 document.getElementById("map-chessboard").style.cursor = "";
@@ -458,36 +460,90 @@ Object.defineProperty(cursor, "hold", {
 
 document.body.onmousedown = (e) => {
     isMouseDown = true;
-    if (!cursor.hold && e.clientY > 50 && e.clientY < window.innerHeight - 60) {
+    // console.log(e.path);
+    // if (e.path[0].id.search(pattern_id) > -1) {
+    if (e.path[3].id === "map-chessboard") {
         isDragging = true;
-        startScrollLeft = html.scrollLeft;
-        startScrollTop = html.scrollTop;
-        startX = e.clientX;
-        startY = e.clientY;
-        nowX = startX;
-        nowY = startY;
+        if (!cursor.hold) {
+            startScrollLeft = html.scrollLeft;
+            startScrollTop = html.scrollTop;
+            startX = e.clientX;
+            startY = e.clientY;
+            nowX = startX;
+            nowY = startY;
+        } else if (cursor.hold === "删除建筑") {
+            deletionBlockBuffer.startX = e.pageX - 8;
+            deletionBlockBuffer.startY = e.pageY - 49;
+            deletionBlockBuffer.li = Math.ceil((e.pageY - 48) / 30);
+            deletionBlockBuffer.co = Math.ceil((e.pageX - 7) / 30);
+            toggleDeletionBlock(true);
+        }
     }
 };
 
-document.body.onmouseup = () => {
+document.body.onmouseup = (e) => {
     isMouseDown = false;
-    if (!cursor.hold && isDragging) {
+    if (isDragging) {
         isDragging = false;
-        startScrollLeft = -1;
-        startScrollTop = -1;
-        startX = -1;
-        startY = -1;
-        nowX = -1;
-        nowY = -1;
+        if (!cursor.hold) {
+            startScrollLeft = -1;
+            startScrollTop = -1;
+            startX = -1;
+            startY = -1;
+            nowX = -1;
+            nowY = -1;
+        } else if (cursor.hold === "删除建筑") {
+            deletionBlockBuffer.width = e.pageX - deletionBlockBuffer.startX - 8;
+            deletionBlockBuffer.height = e.pageY - deletionBlockBuffer.startY - 49;
+            setDeletionBlock(
+                deletionBlockBuffer.startX,
+                deletionBlockBuffer.startY,
+                deletionBlockBuffer.width,
+                deletionBlockBuffer.height
+            );
+            let li = Math.ceil((e.pageY - 48) / 30);
+            let co = Math.ceil((e.pageX - 7) / 30);
+            removeBuildingsInBlock(
+                deletionBlockBuffer.li,
+                deletionBlockBuffer.co,
+                co - deletionBlockBuffer.co,
+                li - deletionBlockBuffer.li
+            );
+            deletionBlockBuffer = {};
+            setDeletionBlock(0, 0, 0, 0);
+            toggleDeletionBlock(false);
+            let cell = document.getElementById(li + "-" + co);
+            if (cell.hasAttribute("occupied")) {
+                cursor.select = cell.getAttribute("occupied");
+            } else {
+                cursor.select = li + "-" + co;
+            }
+            return;
+        }
     }
 };
 
 document.body.onmousemove = (e) => {
-    if (!isDragging || cursor.hold) return;
-    nowX = e.clientX;
-    nowY = e.clientY;
-    html.scrollLeft = startScrollLeft + (startX - nowX);
-    html.scrollTop = startScrollTop + (startY - nowY);
+    if (isDragging) {
+        if (!cursor.hold) {
+            nowX = e.clientX;
+            nowY = e.clientY;
+            html.scrollLeft = startScrollLeft + (startX - nowX);
+            html.scrollTop = startScrollTop + (startY - nowY);
+            return;
+        }
+        if (cursor.hold === "删除建筑") {
+            deletionBlockBuffer.width = e.pageX - deletionBlockBuffer.startX - 8;
+            deletionBlockBuffer.height = e.pageY - deletionBlockBuffer.startY - 49;
+            setDeletionBlock(
+                deletionBlockBuffer.startX,
+                deletionBlockBuffer.startY,
+                deletionBlockBuffer.width,
+                deletionBlockBuffer.height
+            );
+            return;
+        }
+    }
 };
 
 document.onkeydown = (e) => {

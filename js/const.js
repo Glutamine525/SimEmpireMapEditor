@@ -15,6 +15,8 @@ const text_wood = "伐木场";
 const text_clay = "粘土矿";
 const text_wharf = "码头";
 
+const pattern_id = /[\d]{1,3}-[\d]{1,3}(-\d)?/;
+
 const coord_barrier_road = [["15-72"], ["10-67"], ["13-70"]];
 
 const coord_barrier_mountain = [
