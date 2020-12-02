@@ -153,6 +153,15 @@ function removeBuildingsInBlock(li, co, width, height) {
             let cell = document.getElementById(i + "-" + j);
             if (cell.hasAttribute("occupied")) {
                 let unit = cell.getAttribute("occupied").split("-");
+                let building = getElementByCoord(Number(unit[0]), Number(unit[1]), Number(unit[2]));
+                if (isPortectionBuilding(building.innerHTML)) {
+                    clearAroundBuildingProtectionNumber(
+                        Number(unit[0]),
+                        Number(unit[1]),
+                        Number(unit[2]),
+                        Number(building.getAttribute("range_size"))
+                    );
+                }
                 removeBuilding(Number(unit[0]), Number(unit[1]), Number(unit[2]));
             }
         }
