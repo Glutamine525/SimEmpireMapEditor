@@ -951,6 +951,7 @@ function screenshot() {
         useCORS: true,
         width: 116 * 30,
         scale: 2,
+        backgroundColor: "#eef1f1",
     };
     if (record_isRotated) {
         sign.classList.add("sign-rotate");
@@ -980,6 +981,7 @@ function screenshot() {
                     y: 3811,
                     width: 6151,
                     height: 6151,
+                    backgroundColor: "#eef1f1",
                 };
                 if (document.getElementById("dark-mode").checked) {
                     config2.backgroundColor = "#1b1e2b";
