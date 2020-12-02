@@ -469,6 +469,7 @@ document.body.onmousedown = (e) => {
             deletionBlockBuffer.co = Math.ceil((e.pageX - 7) / 30);
             toggleDeletionBlock(true);
             clearBuildingRange();
+            cursor.select = e.path[0].id;
         }
     }
 };
