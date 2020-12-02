@@ -249,7 +249,10 @@ function insertBuilding(li, co, size, modify, text, color, background_color, bor
                 building.style.color = building_info.color;
                 building.style.backgroundColor = building_info.background_color;
                 building.style.borderColor = building_info.border_color;
-                if (!tmp) building.removeAttribute("general");
+                if (!tmp) {
+                    building.removeAttribute("general");
+                    cursor.select = building.id;
+                }
             }
         }
     };
