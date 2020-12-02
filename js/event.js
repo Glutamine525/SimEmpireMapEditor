@@ -79,6 +79,7 @@ function onClickDarkMode() {
         ) {
             document.getElementById("bottom-nav").classList.add("bottom-nav-shadow-dark");
         }
+        document.body.style.backgroundColor = "#1b1e2b";
     } else {
         if (document.getElementById("top-nav").classList.contains("top-nav-shadow-dark")) {
             document.getElementById("top-nav").classList.remove("top-nav-shadow-dark");
@@ -86,13 +87,16 @@ function onClickDarkMode() {
         if (document.getElementById("bottom-nav").classList.contains("bottom-nav-shadow-dark")) {
             document.getElementById("bottom-nav").classList.remove("bottom-nav-shadow-dark");
         }
+        document.body.style.backgroundColor = "#eef1f1";
     }
-    document.body.classList.toggle("border-all-missing-dark");
     document.getElementById("sign-name").classList.toggle("a-dark");
     document.getElementById("sign-github").classList.toggle("a-dark");
     document.getElementById("sign-email").classList.toggle("a-dark");
     document.getElementById("top-nav").classList.toggle("top-nav-dark");
     document.getElementById("bottom-nav").classList.toggle("bottom-nav-dark");
+    for (let v of document.getElementsByTagName("select")) {
+        v.classList.toggle("select-dark");
+    }
     for (let v of document.getElementsByClassName("switch")) {
         v.classList.toggle("switch-dark");
     }
@@ -110,6 +114,9 @@ function onClickDarkMode() {
             }
             if (cell.getAttribute("out_of_boundary") === "true") {
                 cell.classList.toggle("border-all-missing-dark");
+            }
+            if (cell.classList.contains("border-all-missing") && !cell.hasAttribute("out_of_boundary")) {
+                cell.classList.toggle("border-full-dark");
             }
             if (cell.classList.contains("triangle-topleft")) {
                 cell.classList.toggle("triangle-topleft-dark");
@@ -258,7 +265,7 @@ function onClickImport(type) {
                 clearChessboard();
             }
             document.getElementById("nationality").value = data.nationality;
-            drawBottomNav(true);
+            onChangeNationality();
             document.getElementById("no-wood").checked = data.no_wood;
             onClickNoWood(type);
             data.road.map(function (v) {

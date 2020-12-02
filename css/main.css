@@ -37,7 +37,8 @@
 }
 
 .border-full {
-    border: 1px solid #11131b;
+    border: 1px solid #dddddd;
+    background-color: #f5fafa;
     width: 30px;
     height: 30px;
     display: inline-block;
@@ -48,10 +49,12 @@
 }
 
 .border-full-dark {
+    border: 1px solid #363949;
     background-color: #292d3e;
 }
 
 .border-all-missing {
+    background-color: #eef1f1;
     border: 0;
     width: 30px;
     height: 30px;
@@ -67,7 +70,7 @@
 }
 
 .cell-selected {
-    border: 2px solid yellow !important;
+    border: 2px solid orange !important;
 }
 
 .tooltip {

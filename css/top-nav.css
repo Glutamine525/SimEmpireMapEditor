@@ -163,3 +163,23 @@
     left: 40px;
     box-shadow: -1px 1px 5px rgba(0, 0, 0, 0.2);
 }
+
+select {
+    border-radius: 4px;
+}
+
+.select-dark {
+    color: #eef1f1;
+    background-color: #292d3e;
+    border: 1px solid #363949;
+}
+
+.select-dark:focus {
+    border: 1px solid #363949;
+}
+
+.select-dark option {
+    color: #eef1f1;
+    background-color: #292d3e;
+    border-color: #363949;
+}
