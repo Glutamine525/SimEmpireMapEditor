@@ -107,19 +107,3 @@
     box-sizing: border-box;
     display: none;
 }
-
-#map-mini-container {
-    width: 116px;
-    height: 116px;
-    z-index: 35;
-    position: fixed;
-    top: 49px;
-    left: 8px;
-    border: 1px solid #9a9a9a;
-    box-shadow: 2px 2px 3px #9a9a9a;
-}
-
-.map-mini-container-dark {
-    border: 1px solid #11131b !important;
-    box-shadow: 2px 2px 3px #11131b !important;
-}

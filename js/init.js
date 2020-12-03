@@ -413,8 +413,12 @@ Object.defineProperty(cursor, "hold", {
 
 document.body.onmousedown = (e) => {
     isMouseDown = true;
-    // console.log(e.path);
     // if (e.path[0].id.search(pattern_id) > -1) {
+    if (e.path[1].id === "map-mini-container") {
+        isDragging = true;
+        dragMapMiniFocus(e);
+        return;
+    }
     if (e.path[3].id === "map-chessboard") {
         isDragging = true;
         if (!cursor.hold) {
@@ -480,7 +484,7 @@ document.body.onmouseup = (e) => {
 
 document.body.onmousemove = (e) => {
     if (isDragging) {
-        if (!cursor.hold) {
+        if (!cursor.hold && e.path[3].id === "map-chessboard") {
             nowX = e.clientX;
             nowY = e.clientY;
             html.scrollLeft = startScrollLeft + (startX - nowX);
@@ -498,12 +502,21 @@ document.body.onmousemove = (e) => {
             );
             return;
         }
+        if (e.path[1].id === "map-mini-container") {
+            dragMapMiniFocus(e);
+            return;
+        }
     }
 };
 
 document.onkeydown = (e) => {
     let keyCode = e.keyCode || e.which || e.charCode;
     let ctrlKey = e.ctrlKey || e.metaKey;
+    let spaceKey = e.spaceKey;
+    if (keyCode === 32) {
+        onClickCancle();
+        e.preventDefault();
+    }
     if (ctrlKey && keyCode == 67) {
         let unit = cursor.select.split("-");
         if (unit.length === 2) return;
@@ -561,7 +574,8 @@ document.onkeydown = (e) => {
     }
 };
 
-window.onscroll = function () {
+window.onscroll = (e) => {
+    freshMapMiniFocus(false);
     if (getScrollTop() == 0) {
         document.getElementById("top-nav").classList.remove("top-nav-shadow");
         if (document.getElementById("dark-mode").checked) {
@@ -594,6 +608,10 @@ window.onscroll = function () {
     }
 };
 
+window.onresize = () => {
+    freshMapMiniFocus(true);
+};
+
 function init(type) {
     drawChessboard();
     clipEdge();
@@ -606,4 +624,5 @@ function init(type) {
     history.scrollRestoration = "manual";
     document.getElementById("44-90").scrollIntoView();
     forgeSign();
+    freshMapMiniFocus(true);
 }

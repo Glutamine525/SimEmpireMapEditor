@@ -33,7 +33,7 @@ function setMiniMapPixel(li, co, color, size) {
     size = size || 1;
     let ctx = document.getElementById("map-mini").getContext("2d");
     ctx.fillStyle = color;
-    ctx.fillRect(+co - 1, +li - 1, size, size);
+    ctx.fillRect(co - 1, li - 1, size, size);
 }
 
 function optimizeBarrierBoundary(li, co, background_color) {
