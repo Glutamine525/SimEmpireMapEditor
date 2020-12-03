@@ -997,8 +997,7 @@ function screenshot() {
     let config1 = {
         useCORS: true,
         width: 116 * 30,
-        scale: 0.04,
-        // scale: 2,
+        scale: 2,
         backgroundColor: color_chessboard_edge,
     };
     if (record_isRotated) {
