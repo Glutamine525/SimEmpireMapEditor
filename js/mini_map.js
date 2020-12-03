@@ -1,10 +1,19 @@
+function setMiniMapPixel(li, co, color, size) {
+    li = +li;
+    co = +co;
+    size = size || 1;
+    let ctx = document.getElementById("map-mini").getContext("2d");
+    ctx.fillStyle = color;
+    ctx.fillRect(co - 1, li - 1, size, size);
+}
+
 function freshMapMiniFocus(isResize) {
     if (isResize) {
-        mapMiniFocus.style.width = `${Math.ceil(window.innerWidth / 30)}px`;
-        mapMiniFocus.style.height = `${Math.ceil((window.innerHeight - 41 * 2) / 30)}px`;
+        mapMiniFocus.style.width = `${Math.ceil((window.innerWidth - 16) / 30)}px`;
+        mapMiniFocus.style.height = `${Math.ceil((window.innerHeight - 49 * 2) / 30)}px`;
     }
-    mapMiniFocus.style.left = `${Math.floor(html.scrollLeft / 30) + 8}px`;
-    mapMiniFocus.style.top = `${Math.floor(html.scrollTop / 30) + 49}px`;
+    mapMiniFocus.style.left = `${Math.floor(html.scrollLeft / 30) + 9}px`;
+    mapMiniFocus.style.top = `${Math.floor(html.scrollTop / 30) + 50}px`;
 }
 
 function dragMapMiniFocus(event) {

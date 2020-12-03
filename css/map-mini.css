@@ -7,6 +7,7 @@
     left: 8px;
     border: 1px solid #9a9a9a;
     box-shadow: 2px 2px 3px #9a9a9a;
+    pointerevents: none;
 }
 
 .map-mini-container-dark {

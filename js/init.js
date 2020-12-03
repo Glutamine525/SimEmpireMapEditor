@@ -513,13 +513,13 @@ document.body.onmousemove = (e) => {
 };
 
 document.onkeydown = (e) => {
-    e.preventDefault();
     if (isDragging) return;
     let keyCode = e.keyCode || e.which || e.charCode;
     let ctrlKey = e.ctrlKey || e.metaKey;
     let spaceKey = e.spaceKey;
     //Space 取消放置
     if (keyCode === 32) {
+        e.preventDefault();
         let building = getElementByCoord(nowLi, nowCo, nowSize, true);
         if (building) {
             removeBuilding(nowLi, nowCo, nowSize, true);

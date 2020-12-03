@@ -27,15 +27,6 @@ function colorRGB2Hex(color) {
     return hex;
 }
 
-function setMiniMapPixel(li, co, color, size) {
-    li = +li;
-    co = +co;
-    size = size || 1;
-    let ctx = document.getElementById("map-mini").getContext("2d");
-    ctx.fillStyle = color;
-    ctx.fillRect(co - 1, li - 1, size, size);
-}
-
 function optimizeBarrierBoundary(li, co, background_color) {
     li = +li;
     co = +co;
