@@ -84,7 +84,7 @@ function isDirRoad(li, co, direction) {
     co = +co;
     let grid = getElementByCoord(li, co, 1);
     if (direction) {
-        return grid && grid.hasAttribute("road") && getRoadDir(li, co) == direction;
+        return grid && grid.hasAttribute("road") && getRoadDir(li, co) === direction;
     }
     return grid && grid.hasAttribute("road");
 }
@@ -385,7 +385,7 @@ function insertBuilding(li, co, size, modify, text, color, background_color, bor
     if (!tmp && isPortectionBuilding(text)) {
         building.setAttribute("protection", "true");
         setAroundBuildingProtectionNumber(li, co, size, range_size);
-    } else if (!tmp && text != "道路" && background_color != color_tree) {
+    } else if (!tmp && text !== "道路" && background_color !== color_tree) {
         for (let i = li; i < li + size; i++) {
             for (let j = co; j < co + size; j++) {
                 let cell = getElementByCoord(i, j);
@@ -560,7 +560,7 @@ function exportRaw(name, data) {
 }
 
 function getBuildingInfo(building_label, building_name) {
-    if (building_label == "道路") {
+    if (building_label === "道路") {
         return {
             text: "道路",
         };
@@ -800,7 +800,7 @@ function updateRoadsCount(li, co) {
         }
     }
     for (let v of neighbors) {
-        if (getRoadDir(v.li, v.co) == "horizontal") {
+        if (getRoadDir(v.li, v.co) === "horizontal") {
             let hasLeft = false;
             if (isDirRoad(v.li, v.co - 1)) {
                 let count = getRoadCount(v.li, v.co - 1);
@@ -850,7 +850,7 @@ function updateRoadsCount(li, co) {
         }
     }
     for (let v of neighbors) {
-        if (getRoadDir(v.li, v.co) == "vertical") {
+        if (getRoadDir(v.li, v.co) === "vertical") {
             let hasTop = false;
             if (isDirRoad(v.li - 1, v.co, "vertical")) {
                 let count = getRoadCount(v.li - 1, v.co);
@@ -893,7 +893,7 @@ function updateRoadsCount(li, co) {
                 }
             }
         }
-        if (getRoadDir(v.li, v.co) == "null") {
+        if (getRoadDir(v.li, v.co) === "null") {
             setRoadCount(v.li, v.co, "");
             toggleRoadCount(v.li, v.co, false);
             refreshRoadsBorder(v.li, v.co);
@@ -955,6 +955,7 @@ function forgeSign() {
     a1.id = "sign-github";
     a2.id = "sign-email";
     a2.innerHTML = "glutamine525@gmail.com";
+    a2.style.userSelect = "text";
     aType.innerHTML = document.getElementById("type").value.toString() + "木";
     aNationality.innerHTML = label_nationality[document.getElementById("nationality").value];
     aLabel.innerHTML = "地图布局";
@@ -1072,7 +1073,7 @@ function getScrollHeight() {
 
 function getWindowHeight() {
     let windowHeight = 0;
-    if (document.compatMode == "CSS1Compat") {
+    if (document.compatMode === "CSS1Compat") {
         windowHeight = document.documentElement.clientHeight;
     } else {
         windowHeight = document.body.clientHeight;

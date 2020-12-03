@@ -73,12 +73,12 @@ function onClickRotate() {
 
 function onClickDarkMode() {
     if (document.getElementById("dark-mode").checked) {
-        if (!document.getElementById("top-nav").classList.contains("top-nav-shadow-dark") && getScrollTop() != 0) {
+        if (!document.getElementById("top-nav").classList.contains("top-nav-shadow-dark") && getScrollTop() !== 0) {
             document.getElementById("top-nav").classList.add("top-nav-shadow-dark");
         }
         if (
             !document.getElementById("bottom-nav").classList.contains("bottom-nav-shadow-dark") &&
-            getScrollTop() + getWindowHeight() != getScrollHeight()
+            getScrollTop() + getWindowHeight() !== getScrollHeight()
         ) {
             document.getElementById("bottom-nav").classList.add("bottom-nav-shadow-dark");
         }

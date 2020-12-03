@@ -422,7 +422,7 @@ document.body.onmousedown = (e) => {
         dragMapMiniFocus(e);
         return;
     }
-    if (e.path[3].id === "map-chessboard") {
+    if (e.path[0].tagName !== "A" && e.path[3].id === "map-chessboard") {
         isDragging = true;
         if (!cursor.hold) {
             startScrollLeft = html.scrollLeft;
@@ -513,6 +513,8 @@ document.body.onmousemove = (e) => {
 };
 
 document.onkeydown = (e) => {
+    e.preventDefault();
+    if (isDragging) return;
     let keyCode = e.keyCode || e.which || e.charCode;
     let ctrlKey = e.ctrlKey || e.metaKey;
     let spaceKey = e.spaceKey;
@@ -526,14 +528,13 @@ document.onkeydown = (e) => {
             nowSize = -1;
         }
         onClickCancle();
-        e.preventDefault();
     }
     //Ctrl+C 复制选中的建筑
-    if (ctrlKey && keyCode == 67) {
+    if (ctrlKey && keyCode === 67) {
         let unit = cursor.select.split("-");
         if (unit.length === 2) return;
         let building = getElementByCoord(unit[0], unit[1], unit[2]);
-        if (building.getAttribute("modify") != "true") return;
+        if (building.getAttribute("modify") !== "true") return;
         if (building.hasAttribute("road")) return;
         copiedBuilding = {};
         copiedBuilding.size = Number(unit[2]);
@@ -551,7 +552,7 @@ document.onkeydown = (e) => {
         }
     }
     //Ctrl+V 在选中位置粘贴已复制的建筑
-    if (ctrlKey && keyCode == 86 && copiedBuilding) {
+    if (ctrlKey && keyCode === 86 && copiedBuilding) {
         let unit = cursor.select.split("-");
         if (unit.length === 3 && getElementByCoord(unit[0], unit[1], unit[2]).hasAttribute("general")) {
             let building = getElementByCoord(unit[0], unit[1], unit[2]);
@@ -589,7 +590,7 @@ document.onkeydown = (e) => {
 
 window.onscroll = (e) => {
     freshMapMiniFocus(false);
-    if (getScrollTop() == 0) {
+    if (getScrollTop() <= 6) {
         document.getElementById("top-nav").classList.remove("top-nav-shadow");
         if (document.getElementById("dark-mode").checked) {
             document.getElementById("top-nav").classList.remove("top-nav-shadow-dark");
@@ -604,7 +605,7 @@ window.onscroll = (e) => {
             }
         }
     }
-    if (getScrollTop() + getWindowHeight() == getScrollHeight()) {
+    if (getScrollTop() + getWindowHeight() >= getScrollHeight() - 6) {
         document.getElementById("bottom-nav").classList.remove("bottom-nav-shadow");
         if (document.getElementById("dark-mode").checked) {
             document.getElementById("bottom-nav").classList.remove("bottom-nav-shadow-dark");
