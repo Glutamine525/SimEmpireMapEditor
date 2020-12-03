@@ -15,8 +15,14 @@ var startX = -1;
 var startY = -1;
 var nowX = -1;
 var nowY = -1;
+var nowLi = -1;
+var nowCo = -1;
+var nowSize = -1;
+
 var copiedBuilding = undefined;
+
 var roadsBuffer = [];
+
 var deletionBlockBuffer = {};
 var deletionBlock = document.getElementById("deletion-block");
 

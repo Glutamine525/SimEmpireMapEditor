@@ -159,6 +159,9 @@ function assignEvent() {
                         true
                     )
                 ) {
+                    nowLi = i;
+                    nowCo = j;
+                    nowSize = building_info.size;
                     getElementByCoord(i, j, building_info.size, true).style.pointerEvents = "none";
                 }
             };
@@ -513,10 +516,19 @@ document.onkeydown = (e) => {
     let keyCode = e.keyCode || e.which || e.charCode;
     let ctrlKey = e.ctrlKey || e.metaKey;
     let spaceKey = e.spaceKey;
+    //Space 取消放置
     if (keyCode === 32) {
+        let building = getElementByCoord(nowLi, nowCo, nowSize, true);
+        if (building) {
+            removeBuilding(nowLi, nowCo, nowSize, true);
+            nowLi = -1;
+            nowCo = -1;
+            nowSize = -1;
+        }
         onClickCancle();
         e.preventDefault();
     }
+    //Ctrl+C 复制选中的建筑
     if (ctrlKey && keyCode == 67) {
         let unit = cursor.select.split("-");
         if (unit.length === 2) return;
@@ -538,6 +550,7 @@ document.onkeydown = (e) => {
             copiedBuilding.range_size = 0;
         }
     }
+    //Ctrl+V 在选中位置粘贴已复制的建筑
     if (ctrlKey && keyCode == 86 && copiedBuilding) {
         let unit = cursor.select.split("-");
         if (unit.length === 3 && getElementByCoord(unit[0], unit[1], unit[2]).hasAttribute("general")) {
