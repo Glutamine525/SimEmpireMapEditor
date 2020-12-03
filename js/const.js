@@ -1,5 +1,5 @@
 const color_boundary = "#000000";
-const color_road = "#bfbfbf";
+const color_road = "#fdfebd";
 const color_mountain = "#808080";
 const color_water = "#0070c0";
 const color_tree = "#92d050";

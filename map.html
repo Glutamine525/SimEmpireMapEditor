@@ -70,6 +70,12 @@
                 <span class="switch-label" data-on="On" data-off="Off"></span>
                 <span class="switch-handle"></span>
             </label>
+            <span id="mini-map-label">小地图: </span>
+            <label class="switch" style="margin-right: 20px">
+                <input id="mini-map" type="checkbox" class="switch-input" checked="true" onclick="onClickMiniMap()" />
+                <span class="switch-label" data-on="On" data-off="Off"></span>
+                <span class="switch-handle"></span>
+            </label>
             <span id="scale-label">地图缩放: </span>
             <input
                 type="range"
@@ -111,12 +117,16 @@
         <div id="map-chessboard">
             <div id="deletion-block"></div>
         </div>
+        <div id="map-mini-container">
+            <canvas id="map-mini" width="116" height="116"></canvas>
+        </div>
         <div style="height: 49px"></div>
         <div id="bottom-nav"></div>
         <a href="" id="download" download="" style="display: none"></a>
         <img id="image-transition" style="display: block" />
     </body>
 
+    <script src="js/var.js"></script>
     <script src="js/init.js"></script>
 
     <script>

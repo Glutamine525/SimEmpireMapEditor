@@ -20,14 +20,9 @@ function onDoubleClickBuilding() {
     clearBuildingRange();
     cursor.select = unit[0] + "-" + unit[1];
     if (isPortectionBuilding(building.innerHTML)) {
-        clearAroundBuildingProtectionNumber(
-            Number(unit[0]),
-            Number(unit[1]),
-            Number(unit[2]),
-            Number(building.getAttribute("range_size"))
-        );
+        clearAroundBuildingProtectionNumber(unit[0], unit[1], unit[2], building.getAttribute("range_size"));
     }
-    if (!removeBuilding(Number(unit[0]), Number(unit[1]), Number(unit[2]))) {
+    if (!removeBuilding(unit[0], unit[1], unit[2])) {
         cursor.select = unit.join("-");
     }
 }
@@ -36,19 +31,19 @@ function onClickNoWood(type) {
     if (document.getElementById("no-wood").checked) {
         coord_barrier_tree[type - 3].map(function (v) {
             let unit = v.split("-");
-            removeBuilding(Number(unit[0]), Number(unit[1]), 1, false, true);
+            removeBuilding(unit[0], unit[1], 1, false, true);
         });
     } else {
         coord_barrier_tree[type - 3].map(function (v) {
             let cell = document.getElementById(v);
             if (cell.hasAttribute("occupied")) {
                 let unit = cell.getAttribute("occupied").split("-");
-                removeBuilding(Number(unit[0]), Number(unit[1]), Number(unit[2]), false, true);
+                removeBuilding(unit[0], unit[1], unit[2], false, true);
             }
             let unit = v.split("-");
-            insertBuilding(Number(unit[0]), Number(unit[1]), 1, "false", "", "#000000", color_tree, "#000000");
-            getElementByCoord(Number(unit[0]), Number(unit[1]), 1).setAttribute("barrier", "true");
-            optimizeBarrierBoundary(Number(unit[0]), Number(unit[1]), color_tree);
+            insertBuilding(unit[0], unit[1], 1, "false", "", "#000000", color_tree, "#000000");
+            getElementByCoord(unit[0], unit[1], 1).setAttribute("barrier", "true");
+            optimizeBarrierBoundary(unit[0], unit[1], color_tree);
         });
     }
 }
@@ -60,11 +55,19 @@ function onClickRotate() {
         document.getElementById("bottom-nav").style.pointerEvents = "none";
         document.getElementById("截图").style.pointerEvents = "initial";
         document.getElementById("sign").classList.add("sign-rotate");
+        document.getElementById("mini-map").disabled = true;
+        if (document.getElementById("mini-map").checked) {
+            document.getElementById("map-mini-container").style.display = "none";
+        }
     } else {
         document.getElementById("map-chessboard").classList.remove("rotate");
         document.getElementById("map-chessboard").style.pointerEvents = "";
         document.getElementById("bottom-nav").style.pointerEvents = "";
         document.getElementById("sign").classList.remove("sign-rotate");
+        document.getElementById("mini-map").disabled = false;
+        if (document.getElementById("mini-map").checked) {
+            document.getElementById("map-mini-container").style.display = "block";
+        }
     }
 }
 
@@ -79,7 +82,9 @@ function onClickDarkMode() {
         ) {
             document.getElementById("bottom-nav").classList.add("bottom-nav-shadow-dark");
         }
-        document.body.style.backgroundColor = "#1b1e2b";
+        color_chessboard_main = "#292d3e";
+        color_chessboard_edge = "#1b1e2b";
+        color_chessboard_boundary = "#000000";
     } else {
         if (document.getElementById("top-nav").classList.contains("top-nav-shadow-dark")) {
             document.getElementById("top-nav").classList.remove("top-nav-shadow-dark");
@@ -87,13 +92,17 @@ function onClickDarkMode() {
         if (document.getElementById("bottom-nav").classList.contains("bottom-nav-shadow-dark")) {
             document.getElementById("bottom-nav").classList.remove("bottom-nav-shadow-dark");
         }
-        document.body.style.backgroundColor = "#eef1f1";
+        color_chessboard_main = "#f5fafa";
+        color_chessboard_edge = "#eef1f1";
+        color_chessboard_boundary = "#000000";
     }
+    document.body.style.backgroundColor = color_chessboard_edge;
     document.getElementById("sign-name").classList.toggle("a-dark");
     document.getElementById("sign-github").classList.toggle("a-dark");
     document.getElementById("sign-email").classList.toggle("a-dark");
     document.getElementById("top-nav").classList.toggle("top-nav-dark");
     document.getElementById("bottom-nav").classList.toggle("bottom-nav-dark");
+    document.getElementById("map-mini-container").classList.toggle("map-mini-container-dark");
     for (let v of document.getElementsByTagName("select")) {
         v.classList.toggle("select-dark");
     }
@@ -109,40 +118,55 @@ function onClickDarkMode() {
     for (let i = 1; i <= 116; i++) {
         for (let j = 1; j <= 116; j++) {
             let cell = getElementByCoord(i, j);
+            if (cell.classList.contains("border-all-missing") && cell.hasAttribute("occupied")) {
+                cell.classList.toggle("border-full-dark");
+                continue;
+            }
+            if (cell.hasAttribute("boundary")) {
+                setMiniMapPixel(i, j, color_chessboard_boundary);
+                if (cell.classList.contains("triangle-topleft")) {
+                    cell.classList.toggle("triangle-topleft-dark");
+                }
+                if (cell.classList.contains("triangle-topright")) {
+                    cell.classList.toggle("triangle-topright-dark");
+                }
+                if (cell.classList.contains("triangle-bottomleft")) {
+                    cell.classList.toggle("triangle-bottomleft-dark");
+                }
+                if (cell.classList.contains("triangle-bottomright")) {
+                    cell.classList.toggle("triangle-bottomright-dark");
+                }
+                if (cell.classList.contains("angle-top")) {
+                    cell.classList.toggle("angle-top-dark");
+                }
+                if (cell.classList.contains("angle-right")) {
+                    cell.classList.toggle("angle-right-dark");
+                }
+                if (cell.classList.contains("angle-bottom")) {
+                    cell.classList.toggle("angle-bottom-dark");
+                }
+                if (cell.classList.contains("angle-left")) {
+                    cell.classList.toggle("angle-left-dark");
+                }
+                continue;
+            }
             if (cell.classList.contains("border-full")) {
                 cell.classList.toggle("border-full-dark");
+                setMiniMapPixel(i, j, color_chessboard_main);
             }
-            if (cell.getAttribute("out_of_boundary") === "true") {
+            if (cell.getAttribute("out_of_boundary") === "true" && !cell.hasAttribute("boundary")) {
                 cell.classList.toggle("border-all-missing-dark");
-            }
-            if (cell.classList.contains("border-all-missing") && !cell.hasAttribute("out_of_boundary")) {
-                cell.classList.toggle("border-full-dark");
-            }
-            if (cell.classList.contains("triangle-topleft")) {
-                cell.classList.toggle("triangle-topleft-dark");
-            }
-            if (cell.classList.contains("triangle-topright")) {
-                cell.classList.toggle("triangle-topright-dark");
-            }
-            if (cell.classList.contains("triangle-bottomleft")) {
-                cell.classList.toggle("triangle-bottomleft-dark");
-            }
-            if (cell.classList.contains("triangle-bottomright")) {
-                cell.classList.toggle("triangle-bottomright-dark");
-            }
-            if (cell.classList.contains("angle-top")) {
-                cell.classList.toggle("angle-top-dark");
-            }
-            if (cell.classList.contains("angle-right")) {
-                cell.classList.toggle("angle-right-dark");
-            }
-            if (cell.classList.contains("angle-bottom")) {
-                cell.classList.toggle("angle-bottom-dark");
-            }
-            if (cell.classList.contains("angle-left")) {
-                cell.classList.toggle("angle-left-dark");
+                setMiniMapPixel(i, j, color_chessboard_edge);
             }
         }
+    }
+}
+
+function onClickMiniMap() {
+    if (document.getElementById("mini-map").checked) {
+        document.getElementById("map-mini-container").style.display = "block";
+    } else {
+        document.getElementById("map-mini-container").style.display = "none";
     }
 }
 
@@ -151,8 +175,6 @@ function onChangeNationality() {
     forgeSign();
 }
 
-var last_info = "/3/true/衙门-高宅/#ff0000/#ffff00/#ff0000/0";
-
 function onClickSpecialBuilding() {
     let hint =
         "请输入代码, '/'分割, 各数据意义如下:\n" +
@@ -160,31 +182,16 @@ function onClickSpecialBuilding() {
         "第4位: 默认填true, 第5位: 显示的名字, 第6位: 名字颜色\n" +
         "第7位: 背景颜色, 第8位: 边框颜色, 第9位: 建筑影响范围\n示例如下: ";
     let unit = cursor.select.split("-");
-    let sample = unit[0] + "/" + unit[1] + last_info;
+    let sample = `${unit[0]}/${unit[1]}${last_special_info}`;
     let str = prompt(hint, sample);
     if (!str) return;
     let data = str.split("/");
     if (data.length !== 9) {
         return;
     }
-    last_info =
-        "/" + data[2] + "/" + data[3] + "/" + data[4] + "/" + data[5] + "/" + data[6] + "/" + data[7] + "/" + data[8];
-    if (
-        insertBuilding(
-            Number(data[0]),
-            Number(data[1]),
-            Number(data[2]),
-            data[3],
-            data[4],
-            data[5],
-            data[6],
-            data[7],
-            Number(data[8]),
-            false,
-            true
-        )
-    ) {
-        cursor.select = data[0] + "-" + data[1] + "-" + data[2];
+    last_special_info = `/${data[2]}/${data[3]}/${data[4]}/${data[5]}/${data[6]}/${data[7]}/${data[8]}`;
+    if (insertBuilding(data[0], data[1], data[2], data[3], data[4], data[5], data[6], data[7], data[8], false, true)) {
+        cursor.select = `${data[0]}-${data[1]}-${data[2]}`;
     }
 }
 
@@ -254,7 +261,7 @@ function onClickImport(type) {
     let file = document.getElementById("load-file");
     file.click();
     file.onchange = () => {
-        var fr = new FileReader();
+        let fr = new FileReader();
         fr.onload = function (e) {
             let data = JSON.parse(e.target.result);
             if (data.type !== type) {
@@ -270,7 +277,7 @@ function onClickImport(type) {
             onClickNoWood(type);
             data.road.map(function (v) {
                 let unit = v.split("-");
-                insertBuilding(Number(unit[0]), Number(unit[1]), 1, "true", "道路", "#000000", color_road, "#000000");
+                insertBuilding(unit[0], unit[1], 1, "true", "道路", "#000000", color_road, "#000000");
             });
             if (data.standard_buildings) {
                 Object.keys(data.standard_buildings).forEach(function (key) {
@@ -278,8 +285,8 @@ function onClickImport(type) {
                     data.standard_buildings[key].map(function (v) {
                         let unit = v.split("-");
                         insertBuilding(
-                            Number(unit[0]),
-                            Number(unit[1]),
+                            unit[0],
+                            unit[1],
                             building_info.size,
                             "true",
                             building_info.text,
@@ -295,8 +302,8 @@ function onClickImport(type) {
                 let unit = key.split("-");
                 let tmp = data.buildings[key];
                 insertBuilding(
-                    Number(unit[0]),
-                    Number(unit[1]),
+                    unit[0],
+                    unit[1],
                     tmp.size,
                     tmp.modify,
                     tmp.text,

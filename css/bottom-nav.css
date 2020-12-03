@@ -9,22 +9,23 @@
     line-height: 40px;
     user-select: none;
     color: #585858;
-    border-top: 1px solid #9a9a9a;
-    transition: all 0.25s;
+    transition-property: box-shadow, background-color, color;
+    transition-duration: 0.25s;
 }
 
 .bottom-nav-shadow {
+    border-top: 1px solid #9a9a9a;
     box-shadow: 0px -3px 5px #9a9a9a;
 }
 
 .bottom-nav-shadow-dark {
+    border-top: 1px solid #11131b !important;
     box-shadow: 0px -3px 5px #11131b !important;
 }
 
 .bottom-nav-dark {
     color: #eef1f1 !important;
     background-color: #1b1e2b !important;
-    border-top: 1px solid #11131b !important;
 }
 
 #bottom-nav ul,

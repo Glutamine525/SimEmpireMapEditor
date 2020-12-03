@@ -1,19 +1,6 @@
-var html = document.querySelector("html");
-var isMouseDown = false;
-var isDragging = false;
-var startScrollLeft = -1;
-var startScrollTop = -1;
-var startX = -1;
-var startY = -1;
-var nowX = -1;
-var nowY = -1;
-var copiedBuilding = undefined;
-var roadsBuffer = [];
-var deletionBlockBuffer = {};
-var deletionBlock = document.getElementById("deletion-block");
-
 function drawChessboard() {
     let chessboard = document.createElement("div");
+    chessboard.id = "chessboard";
     chessboard.style.lineHeight = "0px";
     for (let i = 1; i <= 116; i++) {
         let line = document.createElement("div");
@@ -24,6 +11,7 @@ function drawChessboard() {
             cell.classList.add("border-full");
             cell.id = getID(i, j);
             line.appendChild(cell);
+            setMiniMapPixel(i, j, color_chessboard_main);
         }
         chessboard.appendChild(line);
     }
@@ -36,11 +24,13 @@ function clipEdge() {
             getElementByCoord(i, j).classList.remove("border-full");
             getElementByCoord(i, j).classList.add("border-all-missing");
             getElementByCoord(i, j).setAttribute("out_of_boundary", "true");
+            setMiniMapPixel(i, j, color_chessboard_edge);
         }
         for (let j = i + 59; j <= 116; j++) {
             getElementByCoord(i, j).classList.remove("border-full");
             getElementByCoord(i, j).classList.add("border-all-missing");
             getElementByCoord(i, j).setAttribute("out_of_boundary", "true");
+            setMiniMapPixel(i, j, color_chessboard_edge);
         }
     }
     for (let i = 60; i <= 116; i++) {
@@ -48,6 +38,7 @@ function clipEdge() {
             getElementByCoord(i, j).classList.remove("border-full");
             getElementByCoord(i, j).classList.add("border-all-missing");
             getElementByCoord(i, j).setAttribute("out_of_boundary", "true");
+            setMiniMapPixel(i, j, color_chessboard_edge);
         }
     }
     for (let i = 59; i <= 116; i++) {
@@ -55,6 +46,7 @@ function clipEdge() {
             getElementByCoord(i, j).classList.remove("border-full");
             getElementByCoord(i, j).classList.add("border-all-missing");
             getElementByCoord(i, j).setAttribute("out_of_boundary", "true");
+            setMiniMapPixel(i, j, color_chessboard_edge);
         }
     }
 }
@@ -66,6 +58,8 @@ function drawBoundary() {
                 continue;
             }
             if (getElementByCoord(i, j - 1) && getElementByCoord(i, j - 1).classList.contains("border-all-missing")) {
+                setMiniMapPixel(i, j, color_chessboard_boundary);
+                getElementByCoord(i, j).setAttribute("boundary", "true");
                 getElementByCoord(i, j).setAttribute("out_of_boundary", "true");
                 if (i < 59 && i > 1) {
                     getElementByCoord(i, j).classList.add("triangle-bottomright");
@@ -75,6 +69,8 @@ function drawBoundary() {
                 continue;
             }
             if (getElementByCoord(i, j + 1) && getElementByCoord(i, j + 1).classList.contains("border-all-missing")) {
+                setMiniMapPixel(i, j, color_chessboard_boundary);
+                getElementByCoord(i, j).setAttribute("boundary", "true");
                 getElementByCoord(i, j).setAttribute("out_of_boundary", "true");
                 if (i < 59) {
                     getElementByCoord(i, j).classList.add("triangle-bottomleft");
@@ -89,9 +85,13 @@ function drawBoundary() {
     getElementByCoord(1, 58).classList.add("angle-top-ancilla");
     getElementByCoord(58, 116).style["margin-right"] = "8px";
     getElementByCoord(58, 116).setAttribute("modify", "false");
+    setMiniMapPixel(58, 116, color_chessboard_boundary);
+    getElementByCoord(58, 116).setAttribute("boundary", "");
     getElementByCoord(58, 116).classList.add("angle-right");
     getElementByCoord(59, 116).classList.add("angle-right-ancilla");
     getElementByCoord(116, 58).classList.add("angle-bottom");
+    setMiniMapPixel(59, 1, color_chessboard_boundary);
+    getElementByCoord(59, 1).setAttribute("boundary", "");
     getElementByCoord(59, 1).setAttribute("modify", "false");
     getElementByCoord(59, 1).classList.add("angle-left");
     getElementByCoord(60, 1).classList.add("angle-left-ancilla");
@@ -209,94 +209,53 @@ function assignEvent() {
 function drawBarrier(type) {
     coord_barrier_road[type - 3].map(function (v) {
         let unit = v.split("-");
-        insertBuilding(Number(unit[0]), Number(unit[1]), 1, "false", "道路", "#000000", color_road, "#000000");
-        getElementByCoord(Number(unit[0]), Number(unit[1]), 1).setAttribute("barrier", "true");
+        insertBuilding(unit[0], unit[1], 1, "false", "道路", "#000000", color_road, "#000000");
+        getElementByCoord(unit[0], unit[1], 1).setAttribute("barrier", "true");
+        setMiniMapPixel(unit[0], unit[1], color_road);
     });
     coord_barrier_mountain[type - 3].map(function (v) {
         let unit = v.split("-");
-        insertBuilding(Number(unit[0]), Number(unit[1]), 1, "false", "", "#000000", color_mountain, "#000000");
-        getElementByCoord(Number(unit[0]), Number(unit[1]), 1).setAttribute("barrier", "true");
-        optimizeBarrierBoundary(Number(unit[0]), Number(unit[1]), color_mountain);
+        insertBuilding(unit[0], unit[1], 1, "false", "", "#000000", color_mountain, "#000000");
+        getElementByCoord(unit[0], unit[1], 1).setAttribute("barrier", "true");
+        optimizeBarrierBoundary(unit[0], unit[1], color_mountain);
+        setMiniMapPixel(unit[0], unit[1], color_mountain);
     });
     coord_barrier_tree[type - 3].map(function (v) {
         let unit = v.split("-");
-        insertBuilding(Number(unit[0]), Number(unit[1]), 1, "false", "", "#000000", color_tree, "#000000");
-        getElementByCoord(Number(unit[0]), Number(unit[1]), 1).setAttribute("barrier", "true");
-        optimizeBarrierBoundary(Number(unit[0]), Number(unit[1]), color_tree);
+        insertBuilding(unit[0], unit[1], 1, "false", "", "#000000", color_tree, "#000000");
+        getElementByCoord(unit[0], unit[1], 1).setAttribute("barrier", "true");
+        optimizeBarrierBoundary(unit[0], unit[1], color_tree);
+        setMiniMapPixel(unit[0], unit[1], color_tree);
     });
     coord_barrier_water[type - 3].map(function (v) {
         let unit = v.split("-");
-        insertBuilding(Number(unit[0]), Number(unit[1]), 1, "false", "", "#000000", color_water, "#000000");
-        getElementByCoord(Number(unit[0]), Number(unit[1]), 1).setAttribute("barrier", "true");
-        optimizeBarrierBoundary(Number(unit[0]), Number(unit[1]), color_water);
+        insertBuilding(unit[0], unit[1], 1, "false", "", "#000000", color_water, "#000000");
+        getElementByCoord(unit[0], unit[1], 1).setAttribute("barrier", "true");
+        optimizeBarrierBoundary(unit[0], unit[1], color_water);
+        setMiniMapPixel(unit[0], unit[1], color_water);
     });
 }
 
 function drawFixedBuilding(type) {
     coord_building_stone[type - 3].map(function (v) {
         let unit = v.split("-");
-        insertBuilding(
-            Number(unit[0]),
-            Number(unit[1]),
-            Number(unit[2]),
-            "false",
-            text_stone,
-            "#000000",
-            color_stone,
-            "#000000"
-        );
+        insertBuilding(unit[0], unit[1], unit[2], "false", text_stone, "#000000", color_stone, "#000000");
     });
     coord_building_copper[type - 3].map(function (v) {
         let unit = v.split("-");
-        insertBuilding(
-            Number(unit[0]),
-            Number(unit[1]),
-            Number(unit[2]),
-            "false",
-            text_copper,
-            "#000000",
-            color_copper,
-            "#000000"
-        );
+        insertBuilding(unit[0], unit[1], unit[2], "false", text_copper, "#000000", color_copper, "#000000");
     });
     coord_building_wood[type - 3].map(function (v) {
         let unit = v.split("-");
-        insertBuilding(
-            Number(unit[0]),
-            Number(unit[1]),
-            Number(unit[2]),
-            "false",
-            text_wood,
-            "#000000",
-            color_wood,
-            "#000000"
-        );
+        insertBuilding(unit[0], unit[1], unit[2], "false", text_wood, "#000000", color_wood, "#000000");
     });
     coord_building_clay[type - 3].map(function (v) {
         let unit = v.split("-");
-        insertBuilding(
-            Number(unit[0]),
-            Number(unit[1]),
-            Number(unit[2]),
-            "false",
-            text_clay,
-            "#000000",
-            color_clay,
-            "#000000"
-        );
+        insertBuilding(unit[0], unit[1], unit[2], "false", text_clay, "#000000", color_clay, "#000000");
     });
     coord_building_wharf[type - 3].map(function (v) {
         let unit = v.split("-");
-        insertBuilding(
-            Number(unit[0]),
-            Number(unit[1]),
-            Number(unit[2]),
-            "false",
-            text_wharf,
-            "#000000",
-            color_wharf,
-            "#000000"
-        );
+        insertBuilding(unit[0], unit[1], unit[2], "false", text_wharf, "#000000", color_wharf, "#000000");
     });
 }
 
@@ -382,7 +341,6 @@ function drawBottomNav(reset) {
     });
 }
 
-var cursor = {};
 cursor.firstSelect = true;
 cursor.firstHold = true;
 cursor.isRangeShowed = false;
@@ -417,7 +375,7 @@ Object.defineProperty(cursor, "select", {
         let range_size = document.getElementById(newValue).getAttribute("range_size");
         if (range_size) {
             let unit = newValue.split("-");
-            showBuildingRange(Number(unit[0]), Number(unit[1]), Number(unit[2]), Number(range_size));
+            showBuildingRange(unit[0], unit[1], unit[2], range_size);
             cursor.isRangeShowed = true;
         }
     },
@@ -544,8 +502,8 @@ document.body.onmousemove = (e) => {
 };
 
 document.onkeydown = (e) => {
-    var keyCode = e.keyCode || e.which || e.charCode;
-    var ctrlKey = e.ctrlKey || e.metaKey;
+    let keyCode = e.keyCode || e.which || e.charCode;
+    let ctrlKey = e.ctrlKey || e.metaKey;
     if (ctrlKey && keyCode == 67) {
         let unit = cursor.select.split("-");
         if (unit.length === 2) return;
@@ -569,11 +527,8 @@ document.onkeydown = (e) => {
     }
     if (ctrlKey && keyCode == 86 && copiedBuilding) {
         let unit = cursor.select.split("-");
-        if (
-            unit.length === 3 &&
-            getElementByCoord(Number(unit[0]), Number(unit[1]), Number(unit[2])).hasAttribute("general")
-        ) {
-            let building = getElementByCoord(Number(unit[0]), Number(unit[1]), Number(unit[2]));
+        if (unit.length === 3 && getElementByCoord(unit[0], unit[1], unit[2]).hasAttribute("general")) {
+            let building = getElementByCoord(unit[0], unit[1], unit[2]);
             let innerHTML = building.innerHTML;
             building.innerHTML =
                 copiedBuilding.text + (innerHTML.indexOf("<") > -1 ? innerHTML.substr(innerHTML.indexOf("<")) : "");
@@ -587,19 +542,14 @@ document.onkeydown = (e) => {
             if (isPortectionBuilding(copiedBuilding.text)) {
                 building.innerHTML = copiedBuilding.text;
                 building.setAttribute("protection", "true");
-                setAroundBuildingProtectionNumber(
-                    Number(unit[0]),
-                    Number(unit[1]),
-                    copiedBuilding.size,
-                    copiedBuilding.range_size
-                );
+                setAroundBuildingProtectionNumber(unit[0], unit[1], copiedBuilding.size, copiedBuilding.range_size);
             }
             return;
         }
         if (unit.length === 3) return;
         insertBuilding(
-            Number(unit[0]),
-            Number(unit[1]),
+            unit[0],
+            unit[1],
             copiedBuilding.size,
             copiedBuilding.modify,
             copiedBuilding.text,

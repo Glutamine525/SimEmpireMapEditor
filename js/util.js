@@ -12,19 +12,33 @@ function getID(li, co, size, tmp) {
 }
 
 function getElementByCoord(li, co, size, tmp) {
+    li = +li;
+    co = +co;
+    size = +size;
     return document.getElementById(getID(li, co, size, tmp));
 }
 
 function colorRGB2Hex(color) {
-    var rgb = color.split(",");
-    var r = parseInt(rgb[0].split("(")[1]);
-    var g = parseInt(rgb[1]);
-    var b = parseInt(rgb[2].split(")")[0]);
-    var hex = "#" + ((1 << 24) + (r << 16) + (g << 8) + b).toString(16).slice(1);
+    let rgb = color.split(",");
+    let r = parseInt(rgb[0].split("(")[1]);
+    let g = parseInt(rgb[1]);
+    let b = parseInt(rgb[2].split(")")[0]);
+    let hex = "#" + ((1 << 24) + (r << 16) + (g << 8) + b).toString(16).slice(1);
     return hex;
 }
 
+function setMiniMapPixel(li, co, color, size) {
+    li = +li;
+    co = +co;
+    size = size || 1;
+    let ctx = document.getElementById("map-mini").getContext("2d");
+    ctx.fillStyle = color;
+    ctx.fillRect(+co - 1, +li - 1, size, size);
+}
+
 function optimizeBarrierBoundary(li, co, background_color) {
+    li = +li;
+    co = +co;
     let grid, adjGrid;
     grid = getElementByCoord(li, co, 1);
     adjGrid = getElementByCoord(li, co - 1, 1);
@@ -66,6 +80,8 @@ function optimizeBarrierBoundary(li, co, background_color) {
 }
 
 function isDirRoad(li, co, direction) {
+    li = +li;
+    co = +co;
     let grid = getElementByCoord(li, co, 1);
     if (direction) {
         return grid && grid.hasAttribute("road") && getRoadDir(li, co) == direction;
@@ -74,6 +90,8 @@ function isDirRoad(li, co, direction) {
 }
 
 function getRoadDir(li, co) {
+    li = +li;
+    co = +co;
     if (isDirRoad(li, co - 1) || isDirRoad(li, co + 1)) {
         return "horizontal";
     }
@@ -105,11 +123,15 @@ function toggleRoadCount(li, co, show) {
 }
 
 function setDeletionBlock(left, top, width, height) {
-    if (width < 0 && height > 0) {
+    left = +left;
+    top = +top;
+    width = +width;
+    height = +height;
+    if (width < 0 && height >= 0) {
         width = -width;
         left -= width;
     }
-    if (width > 0 && height < 0) {
+    if (width >= 0 && height < 0) {
         height = -height;
         top -= height;
     }
@@ -153,16 +175,11 @@ function removeBuildingsInBlock(li, co, width, height) {
             let cell = document.getElementById(i + "-" + j);
             if (cell.hasAttribute("occupied")) {
                 let unit = cell.getAttribute("occupied").split("-");
-                let building = getElementByCoord(Number(unit[0]), Number(unit[1]), Number(unit[2]));
+                let building = getElementByCoord(unit[0], unit[1], unit[2]);
                 if (isPortectionBuilding(building.innerHTML)) {
-                    clearAroundBuildingProtectionNumber(
-                        Number(unit[0]),
-                        Number(unit[1]),
-                        Number(unit[2]),
-                        Number(building.getAttribute("range_size"))
-                    );
+                    clearAroundBuildingProtectionNumber(unit[0], unit[1], unit[2], building.getAttribute("range_size"));
                 }
-                removeBuilding(Number(unit[0]), Number(unit[1]), Number(unit[2]));
+                removeBuilding(unit[0], unit[1], unit[2]);
             }
         }
     }
@@ -187,6 +204,10 @@ function isGridEmpty(li, co, size) {
 }
 
 function insertBuilding(li, co, size, modify, text, color, background_color, border_color, range_size, tmp, special) {
+    li = +li;
+    co = +co;
+    size = +size;
+    range_size = +range_size || 0;
     if (!isGridEmpty(li, co, size)) return false;
     let building = document.createElement("span");
     building.classList.add("building");
@@ -196,6 +217,7 @@ function insertBuilding(li, co, size, modify, text, color, background_color, bor
         building.setAttribute("road", "true");
         building.classList.add("road");
         if (!tmp) {
+            building.style.backgroundColor = background_color;
             let road_counter = document.createElement("span");
             building.appendChild(road_counter);
             building.setAttribute("road_count", 1);
@@ -251,6 +273,7 @@ function insertBuilding(li, co, size, modify, text, color, background_color, bor
                 building.style.borderColor = building_info.border_color;
                 if (!tmp) {
                     building.removeAttribute("general");
+                    setMiniMapPixel(li, co, building_info.background_color, building_info.size);
                     if (building_info.range_size) {
                         building.setAttribute("range_size", building_info.range_size);
                     }
@@ -351,6 +374,7 @@ function insertBuilding(li, co, size, modify, text, color, background_color, bor
                 getElementByCoord(i, j).setAttribute("occupied", building.id);
                 getElementByCoord(i, j).classList.remove("border-full");
                 getElementByCoord(i, j).classList.add("border-all-missing");
+                setMiniMapPixel(i, j, building.style.backgroundColor);
             }
         }
     }
@@ -388,6 +412,9 @@ function insertBuilding(li, co, size, modify, text, color, background_color, bor
 }
 
 function removeBuilding(li, co, size, tmp, compulsory) {
+    li = +li;
+    co = +co;
+    size = +size;
     if (getElementByCoord(li, co).getAttribute("out_of_boundary") === "true") {
         return false;
     }
@@ -425,6 +452,7 @@ function removeBuilding(li, co, size, tmp, compulsory) {
                 getElementByCoord(i, j).removeAttribute("occupied");
                 getElementByCoord(i, j).classList.remove("border-all-missing");
                 getElementByCoord(i, j).classList.add("border-full");
+                setMiniMapPixel(i, j, color_chessboard_main);
             }
         }
     }
@@ -436,6 +464,10 @@ function removeBuilding(li, co, size, tmp, compulsory) {
 }
 
 function showBuildingRange(li, co, size, range_size) {
+    li = +li;
+    co = +co;
+    size = +size;
+    range_size = +range_size;
     for (let i = li - range_size; i < li; i++) {
         for (
             let j = co - range_size + Math.max(li - i - range_size + 4, 0);
@@ -486,16 +518,20 @@ function clearBuildingRange() {
     if (cursor.isRangeShowed) {
         let unit = cursor.select.split("-");
         clearBuildingRangeCore(
-            Number(unit[0]),
-            Number(unit[1]),
-            Number(unit[2]),
-            Number(document.getElementById(cursor.select).getAttribute("range_size"))
+            unit[0],
+            unit[1],
+            unit[2],
+            document.getElementById(cursor.select).getAttribute("range_size")
         );
         cursor.isRangeShowed = false;
     }
 }
 
 function clearBuildingRangeCore(li, co, size, range_size) {
+    li = +li;
+    co = +co;
+    size = +size;
+    range_size = +range_size;
     for (let i = li - range_size; i < li + range_size + size; i++) {
         for (let j = co - range_size; j < co + range_size + size; j++) {
             if (i < 1 || j < 1) continue;
@@ -513,12 +549,12 @@ function clearBuildingRangeCore(li, co, size, range_size) {
 }
 
 function exportRaw(name, data) {
-    var urlObject = window.URL || window.webkitURL || window;
-    var export_blob = new Blob([data]);
-    var save_link = document.createElementNS("http://www.w3.org/1999/xhtml", "a");
+    let urlObject = window.URL || window.webkitURL || window;
+    let export_blob = new Blob([data]);
+    let save_link = document.createElementNS("http://www.w3.org/1999/xhtml", "a");
     save_link.href = urlObject.createObjectURL(export_blob);
     save_link.download = name;
-    var ev = document.createEvent("MouseEvents");
+    let ev = document.createEvent("MouseEvents");
     ev.initMouseEvent("click", true, false, window, 0, 0, 0, 0, 0, false, false, false, false, 0, null);
     save_link.dispatchEvent(ev);
 }
@@ -549,15 +585,17 @@ function getBuildingInfoByText(building_text) {
     return [];
 }
 
-function clearChessboard(barrier) {
+function clearChessboard(compulsory) {
     clearBuildingRange();
     for (let i = 1; i <= 116; i++) {
         for (let j = 1; j <= 116; j++) {
-            if (getElementByCoord(i, j).getAttribute("out_of_boundary") === "true") continue;
+            if (getElementByCoord(i, j).getAttribute("out_of_boundary") === "true") {
+                continue;
+            }
             let cell = getElementByCoord(i, j);
             if (cell.hasAttribute("occupied")) {
                 let unit = cell.getAttribute("occupied").split("-");
-                removeBuilding(Number(unit[0]), Number(unit[1]), Number(unit[2]), false, barrier);
+                removeBuilding(unit[0], unit[1], unit[2], false, compulsory);
             }
             label_protection_all[document.getElementById("nationality").value].map((v) => {
                 if (cell.hasAttribute(v)) cell.removeAttribute(v);
@@ -611,6 +649,10 @@ function setAroundBuildingProtectionNumberProcess2(li, co, self_id, self_text) {
 }
 
 function setAroundBuildingProtectionNumber(li, co, size, range_size) {
+    li = +li;
+    co = +co;
+    size = +size;
+    range_size = +range_size;
     let self = getElementByCoord(li, co, size);
     let text = self.innerHTML;
     if (!isPortectionBuilding(self.innerHTML)) return;
@@ -693,6 +735,10 @@ function clearAroundBuildingProtectionNumberProcess2(li, co, self_id, self_text)
 }
 
 function clearAroundBuildingProtectionNumber(li, co, size, range_size) {
+    li = +li;
+    co = +co;
+    size = +size;
+    range_size = +range_size;
     let self = getElementByCoord(li, co, size);
     let text = self.innerHTML;
     if (!isPortectionBuilding(self.innerHTML)) return;
@@ -856,8 +902,8 @@ function updateRoadsCount(li, co) {
 }
 
 function concat(arr1, arr2) {
-    var arr = arr1.slice(0);
-    for (var i = 0; i < arr2.length; i++) {
+    let arr = arr1.slice(0);
+    for (let i = 0; i < arr2.length; i++) {
         arr.indexOf(arr2[i]) === -1 ? arr.push(arr2[i]) : 0;
     }
     return arr;
@@ -947,18 +993,17 @@ function screenshot() {
     document.getElementById("map-chessboard").classList.add("frosted-glass");
     document.getElementById("bottom-nav").classList.add("frosted-glass");
     loading.style.display = "block";
+    console.time("aaa");
     let config1 = {
         useCORS: true,
         width: 116 * 30,
-        scale: 2,
-        backgroundColor: "#eef1f1",
+        scale: 0.04,
+        // scale: 2,
+        backgroundColor: color_chessboard_edge,
     };
     if (record_isRotated) {
         sign.classList.add("sign-rotate");
         config1.width = 116 * 30 + 300;
-    }
-    if (document.getElementById("dark-mode").checked) {
-        config1.backgroundColor = "#1b1e2b";
     }
     html2canvas(document.querySelector("#map-chessboard"), config1).then(function (canvas1) {
         let timers = new Date();
@@ -971,6 +1016,7 @@ function screenshot() {
         let img = document.getElementById("image-transition");
         img.style.display = "block";
         canvas1.toBlob((blob) => {
+            console.timeEnd("aaa");
             if (record_isRotated) {
                 img.src = URL.createObjectURL(blob);
                 img.style.transform = "rotate(45deg)";
@@ -981,11 +1027,8 @@ function screenshot() {
                     y: 3811,
                     width: 6151,
                     height: 6151,
-                    backgroundColor: "#eef1f1",
+                    backgroundColor: color_chessboard_edge,
                 };
-                if (document.getElementById("dark-mode").checked) {
-                    config2.backgroundColor = "#1b1e2b";
-                }
                 html2canvas(img, config2).then((canvas2) => {
                     canvas2.toBlob((blob) => {
                         downloadScreenshot(filename, blob);
@@ -1029,7 +1072,7 @@ function getScrollHeight() {
 }
 
 function getWindowHeight() {
-    var windowHeight = 0;
+    let windowHeight = 0;
     if (document.compatMode == "CSS1Compat") {
         windowHeight = document.documentElement.clientHeight;
     } else {
